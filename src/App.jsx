@@ -1,90 +1,81 @@
-import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
 import.meta.env.VITE_SUPABASE_URL,
 import.meta.env.VITE_SUPABASE_ANON_KEY
-)
+);
 
 export default function App() {
-const [user, setUser] = useState(null)
-const [loading, setLoading] = useState(true)
-
-const [assignments, setAssignments] = useState([])
-
-const [email, setEmail] = useState('')
-const [password, setPassword] = useState('')
+const [user, setUser] = useState(null);
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [assignments, setAssignments] = useState([]);
 
 useEffect(() => {
-checkUser()
-}, [])
+checkUser();
+}, []);
 
-const checkUser = async () => {
-const { data } = await supabase.auth.getUser()
+async function checkUser() {
+const { data } = await supabase.auth.getUser();
 
 ```
-setUser(data?.user || null)
+setUser(data?.user || null);
 
 if (data?.user) {
-  loadAssignments()
+  loadAssignments();
 }
-
-setLoading(false)
 ```
 
 }
 
-const loadAssignments = async () => {
+async function loadAssignments() {
 const { data } = await supabase
-.from('assignments')
-.select('*')
+.from("assignments")
+.select("*");
 
 ```
-setAssignments(data || [])
+setAssignments(data || []);
 ```
 
 }
 
-const login = async () => {
+async function login() {
 const { error } = await supabase.auth.signInWithPassword({
 email,
 password,
-})
+});
 
 ```
 if (error) {
-  alert(error.message)
-  return
+  alert(error.message);
+  return;
 }
 
-checkUser()
+checkUser();
 ```
 
 }
 
-const logout = async () => {
-await supabase.auth.signOut()
-setUser(null)
-}
-
-if (loading) {
-return <div style={{ padding: 40 }}>Loading...</div>
+async function logout() {
+await supabase.auth.signOut();
+setUser(null);
 }
 
 if (!user) {
 return (
 <div
 style={{
-minHeight: '100vh',
-display: 'flex',
-justifyContent: 'center',
-alignItems: 'center',
-background: '#f1f5f9',
+minHeight: "100vh",
+display: "flex",
+justifyContent: "center",
+alignItems: "center",
+background: "#f1f5f9",
 }}
 >
 <div
 style={{
-background: 'white',
+background: "white",
 padding: 30,
 borderRadius: 12,
 width: 320,
@@ -97,7 +88,7 @@ width: 320,
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         style={{
-          width: '100%',
+          width: "100%",
           padding: 10,
           marginBottom: 10,
         }}
@@ -109,7 +100,7 @@ width: 320,
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         style={{
-          width: '100%',
+          width: "100%",
           padding: 10,
           marginBottom: 10,
         }}
@@ -118,11 +109,11 @@ width: 320,
       <button
         onClick={login}
         style={{
-          width: '100%',
+          width: "100%",
           padding: 10,
-          background: '#0f172a',
-          color: 'white',
-          border: 'none',
+          background: "#0f172a",
+          color: "white",
+          border: "none",
           borderRadius: 8,
         }}
       >
@@ -130,49 +121,34 @@ width: 320,
       </button>
     </div>
   </div>
-)
+);
 ```
 
 }
 
 return (
-<div style={{ minHeight: '100vh', background: '#f8fafc' }}>
-<div
-style={{
-background: '#0f172a',
-color: 'white',
-padding: 20,
-display: 'flex',
-justifyContent: 'space-between',
-}}
-> <h2>Ultimate Smartschool Dashboard</h2>
+<div style={{ padding: 40 }}> <h1>Dashboard</h1>
 
 ```
-    <button onClick={logout}>
-      Logout
-    </button>
-  </div>
+  <button onClick={logout}>Logout</button>
 
-  <div style={{ padding: 20 }}>
-    <h3>Assignments</h3>
+  <h2>Assignments</h2>
 
-    {assignments.map((a) => (
-      <div
-        key={a.id}
-        style={{
-          background: 'white',
-          padding: 16,
-          borderRadius: 10,
-          marginBottom: 10,
-        }}
-      >
-        <strong>{a.title}</strong>
-      </div>
-    ))}
-  </div>
+  {assignments.map((a) => (
+    <div
+      key={a.id}
+      style={{
+        padding: 10,
+        marginBottom: 10,
+        border: "1px solid #ddd",
+        borderRadius: 8,
+      }}
+    >
+      {a.title}
+    </div>
+  ))}
 </div>
 ```
 
-)
+);
 }
-
