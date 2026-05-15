@@ -1,0 +1,371 @@
+import { useEffect, useMemo, useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
+import {
+  Bell,
+  Home,
+  LogOut,
+  Send,
+  Upload,
+  Calendar,
+  MessageSquare,
+  Award,
+  Users,
+  Shield,
+  FileText,
+  Eye,
+  Download,
+  RefreshCw,
+} from 'lucide-react';
+
+// =========================
+// ULTIMATE SMARTSCHOOL SAAS
+// =========================
+// Features:
+// - Multi-role LMS (student/teacher/admin)
+// - Realtime database sync
+// - Assignments + submissions
+// - Chat system
+// - Grades system
+// - Notifications
+// - File upload + viewer
+// - SaaS-ready structure
+// =========================
+
+const supabase = createClient(
+  import.meta.env?.VITE_SUPABASE_URL || '',
+  import.meta.env?.VITE_SUPABASE_ANON_KEY || ''
+);
+
+export default function UltimateSmartschool() {
+  // =========================
+  // STATE
+  // =========================
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const [tab, setTab] = useState('dashboard');
+
+  const [assignments, setAssignments] = useState([]);
+  const [selected, setSelected] = useState(null);
+
+  const [grades, setGrades] = useState([]);
+  const [chat, setChat] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+
+  const [users, setUsers] = useState([]);
+
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [className, setClassName] = useState('5 Handel');
+  const [deadline, setDeadline] = useState('');
+
+  const [message, setMessage] = useState('');
+  const [file, setFile] = useState(null);
+
+  const role = profile?.rol || 'student';
+  const isTeacher = role === 'leraar' || role === 'admin';
+  const isAdmin = role === 'admin';
+
+  // =========================
+  // AUTH
+  // =========================
+  useEffect(() => {
+    const init = async () => {
+      const { data } = await supabase.auth.getUser();
+      const u = data?.user || null;
+      setUser(u);
+
+      if (u) {
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', u.id)
+          .single();
+
+        setProfile(prof);
+      }
+
+      setLoading(false);
+    };
+
+    init();
+  }, []);
+
+  // =========================
+  // REALTIME (ULTIMATE)
+  // =========================
+  useEffect(() => {
+    if (!user) return;
+
+    loadAll();
+
+    const channel = supabase
+      .channel('ultimate-lms')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'assignments' }, loadAll)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'grades' }, loadAll)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chat' }, loadAll)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, loadAll)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'submissions' }, loadAll)
+      .subscribe();
+
+    return () => supabase.removeChannel(channel);
+  }, [user]);
+
+  const loadAll = async () => {
+    const [{ data: a }, { data: g }, { data: c }, { data: n }, { data: u }] = await Promise.all([
+      supabase.from('assignments').select('*').order('id', { ascending: false }),
+      supabase.from('grades').select('*'),
+      supabase.from('chat').select('*').order('created_at', { ascending: true }),
+      supabase.from('notifications').select('*').order('id', { ascending: false }),
+      supabase.from('profiles').select('*'),
+    ]);
+
+    setAssignments(a || []);
+    setGrades(g || []);
+    setChat(c || []);
+    setNotifications(n || []);
+    setUsers(u || []);
+    setSelected(a?.[0] || null);
+  };
+
+  // =========================
+  // AUTH
+  // =========================
+  const login = async () => {
+    const email = prompt('Email');
+    const password = prompt('Wachtwoord');
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) alert(error.message);
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  // =========================
+  // TEACHER: CREATE ASSIGNMENT
+  // =========================
+  const createAssignment = async () => {
+    await supabase.from('assignments').insert({
+      title,
+      content,
+      class_name: className,
+      deadline,
+    });
+
+    await supabase.from('notifications').insert({
+      text: `Nieuwe opdracht: ${title}`,
+      type: 'assignment',
+    });
+
+    setTitle('');
+    setContent('');
+    setDeadline('');
+  };
+
+  // =========================
+  // STUDENT: SUBMIT + FILE UPLOAD
+  // =========================
+  const uploadFile = async (assignmentId) => {
+    if (!file) return alert('Selecteer bestand');
+
+    const fileName = `${Date.now()}-${file.name}`;
+
+    const { error } = await supabase.storage
+      .from('uploads')
+      .upload(fileName, file);
+
+    if (error) return alert(error.message);
+
+    const { data } = supabase.storage.from('uploads').getPublicUrl(fileName);
+
+    await supabase.from('submissions').insert({
+      assignment_id: assignmentId,
+      file_url: data.publicUrl,
+      student_id: user.id,
+    });
+
+    await supabase.from('notifications').insert({
+      text: 'Nieuwe inzending ontvangen',
+      type: 'submission',
+    });
+  };
+
+  // =========================
+  // CHAT
+  // =========================
+  const sendMessage = async () => {
+    if (!message) return;
+
+    await supabase.from('chat').insert({
+      text: message,
+      role,
+      created_at: new Date(),
+    });
+
+    setMessage('');
+  };
+
+  // =========================
+  // FILE VIEW (simple)
+  // =========================
+  const openFile = (url) => {
+    window.open(url, '_blank');
+  };
+
+  // =========================
+  // LOADING
+  // =========================
+  if (loading) {
+    return (
+      <div className="p-6 flex items-center gap-2">
+        <RefreshCw className="animate-spin" /> Loading Ultimate Smartschool...
+      </div>
+    );
+  }
+
+  // =========================
+  // LOGIN
+  // =========================
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-100">
+        <button onClick={login} className="bg-slate-900 text-white p-3 rounded-xl">
+          Login Ultimate Smartschool
+        </button>
+      </div>
+    );
+  }
+
+  // =========================
+  // UI
+  // =========================
+  return (
+    <div className="min-h-screen flex bg-gradient-to-br from-sky-50 via-emerald-50 to-emerald-100">
+      {/* SIDEBAR */}
+      <aside className="w-64 bg-white/70 p-4 flex flex-col justify-between">
+        <div>
+          <h2 className="font-bold mb-4">Ultimate Smartschool</h2>
+
+          <nav className="space-y-2">
+            <button onClick={() => setTab('dashboard')} className="flex gap-2 p-2 rounded hover:bg-slate-100">
+              <Home size={16} /> Dashboard
+            </button>
+            <button onClick={() => setTab('assignments')} className="flex gap-2 p-2 rounded hover:bg-slate-100">
+              <FileText size={16} /> Assignments
+            </button>
+            <button onClick={() => setTab('chat')} className="flex gap-2 p-2 rounded hover:bg-slate-100">
+              <MessageSquare size={16} /> Chat
+            </button>
+            <button onClick={() => setTab('grades')} className="flex gap-2 p-2 rounded hover:bg-slate-100">
+              <Award size={16} /> Grades
+            </button>
+            {isAdmin && (
+              <button onClick={() => setTab('admin')} className="flex gap-2 p-2 rounded hover:bg-slate-100">
+                <Shield size={16} /> Admin
+              </button>
+            )}
+          </nav>
+        </div>
+
+        <button onClick={logout} className="text-red-600 flex gap-2 items-center">
+          <LogOut size={16} /> Logout
+        </button>
+      </aside>
+
+      {/* MAIN */}
+      <main className="flex-1 p-6">
+        <div className="flex justify-between mb-4">
+          <h1 className="text-xl font-bold">
+            {role.toUpperCase()} DASHBOARD
+          </h1>
+
+          <div className="flex gap-3 items-center">
+            <Bell />
+            <span>{notifications.length}</span>
+          </div>
+        </div>
+
+        {/* ASSIGNMENTS */}
+        {tab === 'assignments' && (
+          <>
+            {isTeacher && (
+              <div className="bg-white p-4 rounded-xl mb-4">
+                <h2 className="font-bold mb-2">Create Assignment</h2>
+                <input className="border p-2 w-full mb-2" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" />
+                <textarea className="border p-2 w-full mb-2" value={content} onChange={(e) => setContent(e.target.value)} placeholder="Content" />
+                <input className="border p-2 w-full mb-2" value={className} onChange={(e) => setClassName(e.target.value)} />
+                <input type="date" className="border p-2 w-full mb-2" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
+                <button onClick={createAssignment} className="bg-slate-900 text-white px-4 py-2 rounded">
+                  Publish
+                </button>
+              </div>
+            )}
+
+            <div className="grid md:grid-cols-2 gap-4">
+              {assignments.map((a) => (
+                <div key={a.id} className="bg-white p-4 rounded-xl shadow">
+                  <h3 className="font-bold">{a.title}</h3>
+                  <p className="text-sm opacity-70">{a.class_name}</p>
+                  <p className="text-xs opacity-60">Deadline: {a.deadline}</p>
+
+                  <div className="mt-2 flex gap-2">
+                    <button onClick={() => uploadFile(a.id)} className="text-green-600 flex gap-1">
+                      <Upload size={14} /> Submit
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* CHAT */}
+        {tab === 'chat' && (
+          <div className="bg-white p-4 rounded-xl">
+            <div className="h-64 overflow-auto border p-2 mb-2">
+              {chat.map((m, i) => (
+                <div key={i}><b>{m.role}</b>: {m.text}</div>
+              ))}
+            </div>
+
+            <div className="flex gap-2">
+              <input className="border flex-1 p-2" value={message} onChange={(e) => setMessage(e.target.value)} />
+              <button onClick={sendMessage} className="bg-slate-900 text-white px-4 rounded">Send</button>
+            </div>
+          </div>
+        )}
+
+        {/* GRADES */}
+        {tab === 'grades' && (
+          <div className="bg-white p-4 rounded-xl">
+            {grades.length === 0 ? (
+              <p className="text-sm opacity-70">No grades yet</p>
+            ) : (
+              grades.map((g, i) => (
+                <div key={i} className="border-b py-2">{g.student} - {g.score}</div>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* ADMIN */}
+        {tab === 'admin' && isAdmin && (
+          <div className="bg-white p-4 rounded-xl">
+            <h2 className="font-bold mb-2">Admin Panel</h2>
+
+            <div className="text-sm opacity-70 mb-2">Manage users & permissions</div>
+
+            {users.map((u) => (
+              <div key={u.id} className="border-b py-2">
+                {u.email} — {u.rol}
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
