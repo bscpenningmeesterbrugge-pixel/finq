@@ -130,7 +130,7 @@ return (
 <div style={{ padding: 40 }}> <h1>Dashboard</h1>
 
 ```
-  <button onClick={logout}>Logout</button>
+ ;
 
   <h2>Assignments</h2>
 
