@@ -6,6 +6,28 @@ import.meta.env.VITE_SUPABASE_URL,
 import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
+const menuButton = {
+  background: "rgba(255,255,255,0.08)",
+  color: "white",
+  border: "none",
+  padding: 14,
+  borderRadius: 12,
+  textAlign: "left",
+  cursor: "pointer",
+};
+
+const cardStyle = {
+  background: "white",
+  borderRadius: 20,
+  padding: 24,
+};
+
+const bigNumber = {
+  fontSize: 36,
+  fontWeight: "bold",
+  color: "#0f766e",
+};
+
 export default function App() {
   console.log(import.meta.env.VITE_SUPABASE_URL)
 console.log(import.meta.env.VITE_SUPABASE_ANON_KEY)
