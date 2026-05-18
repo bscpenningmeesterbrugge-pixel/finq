@@ -43,11 +43,6 @@ const [messages, setMessages] = useState([]);
 const [newMessageTitle, setNewMessageTitle] = useState("");
 const [newMessageContent, setNewMessageContent] = useState("");
 
-const [newAssignment, setNewAssignment] = useState("");
-
-const [messages, setMessages] = useState([]);
-const [newMessageTitle, setNewMessageTitle] = useState("");
-const [newMessageContent, setNewMessageContent] = useState("");
 
 
 useEffect(() => {
