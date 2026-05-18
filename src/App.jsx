@@ -183,9 +183,9 @@ onClick={() => setActivePage("dashboard")}
 
 >
 
-```
+
 Dashboard
-```
+
 
   </button>
 
@@ -195,9 +195,9 @@ onClick={() => setActivePage("assignments")}
 
 >
 
-```
+
 Assignments
-```
+
 
   </button>
 
@@ -207,9 +207,9 @@ onClick={() => setActivePage("inbox")}
 
 >
 
-```
+
 Inbox
-```
+
 
   </button>
 
@@ -219,9 +219,9 @@ onClick={() => setActivePage("grades")}
 
 >
 
-```
+
 Grades
-```
+
 
   </button>
 
@@ -374,17 +374,17 @@ Grades
   >
     <h2>Punten</h2>
 
-```
+
 <p>Hier komen resultaten en rapporten.</p>
-```
+
 
   </div>
 )}
 
-```
+
   </div>
 </main>
-```
+
 
   </div>
 );
