@@ -496,19 +496,6 @@ Grades
   </div>
 
 
-{activePage === "grades" && (
-
-  <div
-    style={{
-      background: "white",
-      borderRadius: 20,
-      padding: 24,
-    }}
-  >
-    <h2>Punten</h2>
-
-
-<p>Hier komen resultaten en rapporten.</p>
 
 
   </div>
