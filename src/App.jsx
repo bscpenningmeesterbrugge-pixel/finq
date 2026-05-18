@@ -175,29 +175,58 @@ return (
         Ultimate Smartschool
       </h2>
 
+<div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+
+<button
+style={menuButton}
+onClick={() => setActivePage("dashboard")}
+
+>
+
 ```
-  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-    <button
-  style={menuButton}
-  onClick={() => setActivePage("dashboard")}
+Dashboard
+```
+
+  </button>
+
+<button
+style={menuButton}
+onClick={() => setActivePage("assignments")}
+
 >
 
-    <button
-  style={menuButton}
-  onClick={() => setActivePage("assignments")}
+```
+Assignments
+```
+
+  </button>
+
+<button
+style={menuButton}
+onClick={() => setActivePage("inbox")}
+
 >
 
-    <button
-  style={menuButton}
-  onClick={() => setActivePage("inbox")}
+```
+Inbox
+```
+
+  </button>
+
+<button
+style={menuButton}
+onClick={() => setActivePage("grades")}
+
 >
 
-   <button
-  style={menuButton}
-  onClick={() => setActivePage("grades")}
->
-  </div>
-</aside>
+```
+Grades
+```
+
+  </button>
+
+</div>
+
 
 {/* MAIN */}
 <main style={{ flex: 1 }}>
@@ -345,11 +374,18 @@ return (
   >
     <h2>Punten</h2>
 
-
+```
 <p>Hier komen resultaten en rapporten.</p>
+```
+
   </div>
+)}
+
+```
   </div>
-  </main>
+</main>
+```
+
   </div>
 );
 }
