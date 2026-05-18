@@ -347,15 +347,3 @@ return (
 
 ```
 <p>Hier komen resultaten en rapporten.</p>
-
-
-  </div>
-)}
-
-</main>
-
-
-  </div>
-);
-
-}
