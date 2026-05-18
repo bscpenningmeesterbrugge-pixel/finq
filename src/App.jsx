@@ -40,6 +40,10 @@ const [activePage, setActivePage] = useState("dashboard");
   const [newAssignment, setNewAssignment] = useState("");
 
 const [messages, setMessages] = useState([]);
+  const [grades, setGrades] = useState([]);
+const [studentName, setStudentName] = useState("");
+const [subject, setSubject] = useState("");
+const [score, setScore] = useState("");
 const [newMessageTitle, setNewMessageTitle] = useState("");
 const [newMessageContent, setNewMessageContent] = useState("");
 
@@ -58,6 +62,7 @@ setUser(data?.user || null);
 if (data?.user) {
   loadAssignments();
   loadMessages();
+loadGrades();
 }
 
 
@@ -79,6 +84,15 @@ const { data } = await supabase
 .order("created_at", { ascending: false });
 
 setMessages(data || []);
+}
+
+  async function loadGrades() {
+  const { data } = await supabase
+    .from("grades")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  setGrades(data || []);
 }
 
 
@@ -143,6 +157,30 @@ setNewMessageContent("");
 loadMessages();
 }
 
+  async function addGrade() {
+  if (!studentName || !subject || !score) return;
+
+  const { error } = await supabase
+    .from("grades")
+    .insert([
+      {
+        student: studentName,
+        subject,
+        score,
+      },
+    ]);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  setStudentName("");
+  setSubject("");
+  setScore("");
+
+  loadGrades();
+}
   
 async function logout() {
 await supabase.auth.signOut();
@@ -487,6 +525,102 @@ Grades
   </div>
 ))}
 
+  </div>
+)}
+    {activePage === "grades" && (
+
+  <div
+    style={{
+      background: "white",
+      borderRadius: 20,
+      padding: 24,
+    }}
+  >
+    <h2 style={{ marginBottom: 20 }}>
+      Puntenmodule
+    </h2>
+
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 10,
+        marginBottom: 24,
+      }}
+    >
+      <input
+        placeholder="Student"
+        value={studentName}
+        onChange={(e) =>
+          setStudentName(e.target.value)
+        }
+        style={{
+          padding: 12,
+          borderRadius: 10,
+          border: "1px solid #ddd",
+        }}
+      />
+
+      <input
+        placeholder="Vak"
+        value={subject}
+        onChange={(e) =>
+          setSubject(e.target.value)
+        }
+        style={{
+          padding: 12,
+          borderRadius: 10,
+          border: "1px solid #ddd",
+        }}
+      />
+
+      <input
+        placeholder="Score"
+        type="number"
+        value={score}
+        onChange={(e) =>
+          setScore(e.target.value)
+        }
+        style={{
+          padding: 12,
+          borderRadius: 10,
+          border: "1px solid #ddd",
+        }}
+      />
+
+      <button
+        onClick={addGrade}
+        style={{
+          background: "#0f766e",
+          color: "white",
+          border: "none",
+          padding: "12px 18px",
+          borderRadius: 10,
+          cursor: "pointer",
+        }}
+      >
+        Punt toevoegen
+      </button>
+    </div>
+
+    {grades.map((g) => (
+      <div
+        key={g.id}
+        style={{
+          padding: 18,
+          borderRadius: 14,
+          background: "#f8fafc",
+          marginBottom: 14,
+          border: "1px solid #ddd",
+        }}
+      >
+        <h3>{g.student}</h3>
+
+        <p>Vak: {g.subject}</p>
+
+        <p>Score: {g.score}/20</p>
+      </div>
+    ))}
   </div>
 )}
 
