@@ -37,6 +37,7 @@ const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 const [assignments, setAssignments] = useState([]);
 const [activePage, setActivePage] = useState("dashboard");
+  const [role, setRole] = useState("student");
   const [newAssignment, setNewAssignment] = useState("");
 
 const [messages, setMessages] = useState([]);
@@ -61,8 +62,9 @@ setUser(data?.user || null);
 
 if (data?.user) {
   loadAssignments();
-  loadMessages();
+loadMessages();
 loadGrades();
+loadProfile(data.user.id);
 }
 
 
@@ -95,6 +97,17 @@ setMessages(data || []);
   setGrades(data || []);
 }
 
+  async function loadProfile(userId) {
+  const { data } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .single();
+
+  if (data) {
+    setRole(data.role);
+  }
+}
 
 async function login() {
 const { error } = await supabase.auth.signInWithPassword({
@@ -342,9 +355,15 @@ Grades
       borderBottom: "1px solid #ddd",
     }}
   >
-    <h1 style={{ color: "#0f172a" }}>
-      Dashboard
-    </h1>
+    <div>
+  <h1 style={{ color: "#0f172a", margin: 0 }}>
+    Dashboard
+  </h1>
+
+  <p style={{ color: "#64748b" }}>
+    Rol: {role}
+  </p>
+</div>
 
     <button
       onClick={logout}
@@ -457,6 +476,7 @@ Grades
       Inbox
     </h2>
 
+    {role === "teacher" && (
 
 <div
   style={{
@@ -508,6 +528,8 @@ Grades
   </button>
 </div>
 
+    )}
+    
 {messages.map((m) => (
   <div
     key={m.id}
