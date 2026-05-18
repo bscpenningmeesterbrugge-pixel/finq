@@ -152,30 +152,143 @@ width: 320,
 }
 
 return (
-<div style={{ padding: 40 }}> <h1>Dashboard</h1>
 
-
-  <button onClick={logout}>
-    Logout
-  </button>
-
-  <h2>Assignments</h2>
-
-  {assignments.map((a) => (
-    <div
-      key={a.id}
+  <div
+    style={{
+      minHeight: "100vh",
+      display: "flex",
+      background: "#f1f5f9",
+      fontFamily: "Arial",
+    }}
+  >
+    {/* SIDEBAR */}
+    <aside
       style={{
-        padding: 10,
-        marginBottom: 10,
-        border: "1px solid #ddd",
-        borderRadius: 8,
+        width: 260,
+        background: "linear-gradient(180deg,#0f172a,#134e4a)",
+        color: "white",
+        padding: 24,
       }}
     >
-      {a.title}
+      <h2 style={{ marginBottom: 40 }}>
+        Ultimate Smartschool
+      </h2>
+
+```
+  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    <button style={menuButton}>
+      Dashboard
+    </button>
+
+    <button style={menuButton}>
+      Assignments
+    </button>
+
+    <button style={menuButton}>
+      Inbox
+    </button>
+
+    <button style={menuButton}>
+      Grades
+    </button>
+  </div>
+</aside>
+
+{/* MAIN */}
+<main style={{ flex: 1 }}>
+  {/* TOPBAR */}
+  <div
+    style={{
+      height: 80,
+      background: "white",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingLeft: 30,
+      paddingRight: 30,
+      borderBottom: "1px solid #ddd",
+    }}
+  >
+    <h1 style={{ color: "#0f172a" }}>
+      Dashboard
+    </h1>
+
+    <button
+      onClick={logout}
+      style={{
+        background: "#0f172a",
+        color: "white",
+        border: "none",
+        padding: "10px 18px",
+        borderRadius: 10,
+        cursor: "pointer",
+      }}
+    >
+      Logout
+    </button>
+  </div>
+
+  {/* CONTENT */}
+  <div style={{ padding: 30 }}>
+    {/* STATS */}
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+        gap: 20,
+        marginBottom: 30,
+      }}
+    >
+      <div style={cardStyle}>
+        <h3>Assignments</h3>
+        <p style={bigNumber}>
+          {assignments.length}
+        </p>
+      </div>
+
+      <div style={cardStyle}>
+        <h3>Messages</h3>
+        <p style={bigNumber}>12</p>
+      </div>
+
+      <div style={cardStyle}>
+        <h3>Notifications</h3>
+        <p style={bigNumber}>5</p>
+      </div>
     </div>
-  ))}
-</div>
 
+    {/* ASSIGNMENTS */}
+    <div
+      style={{
+        background: "white",
+        borderRadius: 20,
+        padding: 24,
+      }}
+    >
+      <h2 style={{ marginBottom: 20 }}>
+        Recent Assignments
+      </h2>
 
+      {assignments.map((a) => (
+        <div
+          key={a.id}
+          style={{
+            padding: 18,
+            borderRadius: 14,
+            background: "#ecfeff",
+            marginBottom: 12,
+            border: "1px solid #a5f3fc",
+          }}
+        >
+          <strong>{a.title}</strong>
+        </div>
+      ))}
+    </div>
+  </div>
+</main>
+```
+
+  </div>
 );
+
 }
