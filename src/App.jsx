@@ -274,11 +274,11 @@ return (
   >
     <h2>Welkom terug 👋</h2>
 
-```
+
 <p>
   Je bent ingelogd op Ultimate Smartschool.
 </p>
-```
+
 
   </div>
 )}
@@ -296,7 +296,7 @@ return (
       Recent Assignments
     </h2>
 
-```
+
 {assignments.map((a) => (
   <div
     key={a.id}
@@ -311,7 +311,7 @@ return (
     <strong>{a.title}</strong>
   </div>
 ))}
-```
+
 
   </div>
 )}
@@ -327,9 +327,9 @@ return (
   >
     <h2>Inbox</h2>
 
-```
+
 <p>Hier komen berichten van leerkrachten.</p>
-```
+
 
   </div>
 )}
@@ -345,5 +345,9 @@ return (
   >
     <h2>Punten</h2>
 
-```
+
 <p>Hier komen resultaten en rapporten.</p>
+  </div>
+  </div>
+  </main>
+  
