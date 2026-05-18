@@ -37,6 +37,18 @@ const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 const [assignments, setAssignments] = useState([]);
 const [activePage, setActivePage] = useState("dashboard");
+  const [newAssignment, setNewAssignment] = useState("");
+
+const [messages, setMessages] = useState([]);
+const [newMessageTitle, setNewMessageTitle] = useState("");
+const [newMessageContent, setNewMessageContent] = useState("");
+
+const [newAssignment, setNewAssignment] = useState("");
+
+const [messages, setMessages] = useState([]);
+const [newMessageTitle, setNewMessageTitle] = useState("");
+const [newMessageContent, setNewMessageContent] = useState("");
+
 
 useEffect(() => {
 checkUser();
@@ -50,21 +62,23 @@ setUser(data?.user || null);
 
 if (data?.user) {
   loadAssignments();
+  loadMessages();
 }
 
 
 }
 
-async function loadAssignments() {
+async function loadAssignments() 
+  loadMessages();
+  async function loadMessages() {
 const { data } = await supabase
-.from("assignments")
-.select("*");
+.from("messages")
+.select("*")
+.order("created_at", { ascending: false });
 
-
-setAssignments(data || []);
-
-
+setMessages(data || []);
 }
+
 
 async function login() {
 const { error } = await supabase.auth.signInWithPassword({
@@ -83,6 +97,51 @@ checkUser();
 
 }
 
+async function addAssignment() {
+if (!newAssignment) return;
+
+const { error } = await supabase
+.from("assignments")
+.insert([
+{
+title: newAssignment,
+},
+]);
+
+if (error) {
+alert(error.message);
+return;
+}
+
+setNewAssignment("");
+
+loadAssignments();
+}
+
+async function addMessage() {
+if (!newMessageTitle) return;
+
+const { error } = await supabase
+.from("messages")
+.insert([
+{
+title: newMessageTitle,
+content: newMessageContent,
+},
+]);
+
+if (error) {
+alert(error.message);
+return;
+}
+
+setNewMessageTitle("");
+setNewMessageContent("");
+
+loadMessages();
+}
+
+  
 async function logout() {
 await supabase.auth.signOut();
 setUser(null);
@@ -354,10 +413,82 @@ Grades
       padding: 24,
     }}
   >
-    <h2>Inbox</h2>
+    <h2 style={{ marginBottom: 20 }}>
+      Inbox
+    </h2>
 
+```
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+    marginBottom: 20,
+  }}
+>
+  <input
+    value={newMessageTitle}
+    onChange={(e) =>
+      setNewMessageTitle(e.target.value)
+    }
+    placeholder="Titel"
+    style={{
+      padding: 12,
+      borderRadius: 10,
+      border: "1px solid #ddd",
+    }}
+  />
 
-<p>Hier komen berichten van leerkrachten.</p>
+  <textarea
+    value={newMessageContent}
+    onChange={(e) =>
+      setNewMessageContent(e.target.value)
+    }
+    placeholder="Bericht..."
+    rows={4}
+    style={{
+      padding: 12,
+      borderRadius: 10,
+      border: "1px solid #ddd",
+    }}
+  />
+
+  <button
+    onClick={addMessage}
+    style={{
+      background: "#0f766e",
+      color: "white",
+      border: "none",
+      padding: "12px 18px",
+      borderRadius: 10,
+      cursor: "pointer",
+    }}
+  >
+    Bericht posten
+  </button>
+</div>
+
+{messages.map((m) => (
+  <div
+    key={m.id}
+    style={{
+      padding: 18,
+      borderRadius: 14,
+      background: "#f8fafc",
+      marginBottom: 14,
+      border: "1px solid #ddd",
+    }}
+  >
+    <h3>{m.title}</h3>
+
+    <p>{m.content}</p>
+  </div>
+))}
+```
+
+  </div>
+)}
+
 
 
   </div>
