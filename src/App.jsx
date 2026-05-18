@@ -493,12 +493,6 @@ Grades
 
 
 
-  </div>
-
-
-
-
-  </div>
 </main>
 
 
