@@ -499,10 +499,6 @@ Grades
 
 
   </div>
-)}
-
-
-  </div>
 </main>
 
 
