@@ -177,21 +177,25 @@ return (
 
 ```
   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-    <button style={menuButton}>
-      Dashboard
-    </button>
+    <button
+  style={menuButton}
+  onClick={() => setActivePage("dashboard")}
+>
 
-    <button style={menuButton}>
-      Assignments
-    </button>
+    <button
+  style={menuButton}
+  onClick={() => setActivePage("assignments")}
+>
 
-    <button style={menuButton}>
-      Inbox
-    </button>
+    <button
+  style={menuButton}
+  onClick={() => setActivePage("inbox")}
+>
 
-    <button style={menuButton}>
-      Grades
-    </button>
+   <button
+  style={menuButton}
+  onClick={() => setActivePage("grades")}
+>
   </div>
 </aside>
 
@@ -259,35 +263,97 @@ return (
     </div>
 
     {/* ASSIGNMENTS */}
-    <div
-      style={{
-        background: "white",
-        borderRadius: 20,
-        padding: 24,
-      }}
-    >
-      <h2 style={{ marginBottom: 20 }}>
-        Recent Assignments
-      </h2>
+    {activePage === "dashboard" && (
 
-      {assignments.map((a) => (
-        <div
-          key={a.id}
-          style={{
-            padding: 18,
-            borderRadius: 14,
-            background: "#ecfeff",
-            marginBottom: 12,
-            border: "1px solid #a5f3fc",
-          }}
-        >
-          <strong>{a.title}</strong>
-        </div>
-      ))}
-    </div>
-  </div>
-</main>
+  <div
+    style={{
+      background: "white",
+      borderRadius: 20,
+      padding: 24,
+    }}
+  >
+    <h2>Welkom terug 👋</h2>
+
 ```
+<p>
+  Je bent ingelogd op Ultimate Smartschool.
+</p>
+```
+
+  </div>
+)}
+
+{activePage === "assignments" && (
+
+  <div
+    style={{
+      background: "white",
+      borderRadius: 20,
+      padding: 24,
+    }}
+  >
+    <h2 style={{ marginBottom: 20 }}>
+      Recent Assignments
+    </h2>
+
+```
+{assignments.map((a) => (
+  <div
+    key={a.id}
+    style={{
+      padding: 18,
+      borderRadius: 14,
+      background: "#ecfeff",
+      marginBottom: 12,
+      border: "1px solid #a5f3fc",
+    }}
+  >
+    <strong>{a.title}</strong>
+  </div>
+))}
+```
+
+  </div>
+)}
+
+{activePage === "inbox" && (
+
+  <div
+    style={{
+      background: "white",
+      borderRadius: 20,
+      padding: 24,
+    }}
+  >
+    <h2>Inbox</h2>
+
+```
+<p>Hier komen berichten van leerkrachten.</p>
+```
+
+  </div>
+)}
+
+{activePage === "grades" && (
+
+  <div
+    style={{
+      background: "white",
+      borderRadius: 20,
+      padding: 24,
+    }}
+  >
+    <h2>Punten</h2>
+
+```
+<p>Hier komen resultaten en rapporten.</p>
+
+
+  </div>
+)}
+
+</main>
+
 
   </div>
 );
