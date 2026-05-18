@@ -127,7 +127,12 @@ width: 320,
 }
 
 return (
-<div style={{ padding: 40 }}> <h1>Dashboard</h1>
+<div 
+style={{ 
+padding: 40
+}}
+> 
+<h1>Dashboard</h1>
 
 ```
   <button onClick={logout}>Logout</button>
