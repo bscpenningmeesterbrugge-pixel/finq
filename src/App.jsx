@@ -63,6 +63,13 @@ if (data?.user) {
 
 }
 
+async function loadAssignments() {
+const { data } = await supabase
+.from("assignments")
+.select("*");
+
+setAssignments(data || []);
+}
 
   
   async function loadMessages() {
@@ -487,7 +494,7 @@ Grades
 
 
   </div>
-)}
+
 
 {activePage === "grades" && (
 
