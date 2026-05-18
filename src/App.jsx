@@ -227,7 +227,7 @@ Grades
 
 </div>
 
-
+    </aside>
 {/* MAIN */}
 <main style={{ flex: 1 }}>
   {/* TOPBAR */}
