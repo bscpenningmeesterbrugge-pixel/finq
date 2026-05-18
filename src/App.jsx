@@ -63,8 +63,7 @@ if (data?.user) {
 
 }
 
-async function loadAssignments() ; 
-  }
+
   
   async function loadMessages() {
 const { data } = await supabase
