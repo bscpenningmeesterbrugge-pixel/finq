@@ -7,6 +7,9 @@ import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
 export default function App() {
+  console.log(import.meta.env.VITE_SUPABASE_URL)
+console.log(import.meta.env.VITE_SUPABASE_ANON_KEY)
+
 const [user, setUser] = useState(null);
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
