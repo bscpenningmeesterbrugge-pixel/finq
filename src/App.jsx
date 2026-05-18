@@ -36,6 +36,7 @@ const [user, setUser] = useState(null);
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 const [assignments, setAssignments] = useState([]);
+const [activePage, setActivePage] = useState("dashboard");
 
 useEffect(() => {
 checkUser();
