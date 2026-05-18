@@ -19,13 +19,13 @@ checkUser();
 async function checkUser() {
 const { data } = await supabase.auth.getUser();
 
-```
+
 setUser(data?.user || null);
 
 if (data?.user) {
   loadAssignments();
 }
-```
+
 
 }
 
@@ -34,9 +34,9 @@ const { data } = await supabase
 .from("assignments")
 .select("*");
 
-```
+
 setAssignments(data || []);
-```
+
 
 }
 
@@ -46,14 +46,14 @@ email,
 password,
 });
 
-```
+
 if (error) {
   alert(error.message);
   return;
 }
 
 checkUser();
-```
+
 
 }
 
@@ -82,7 +82,7 @@ width: 320,
 }}
 > <h1>Ultimate Smartschool</h1>
 
-```
+
       <input
         placeholder="Email"
         value={email}
@@ -122,14 +122,14 @@ width: 320,
     </div>
   </div>
 );
-```
+
 
 }
 
 return (
 <div style={{ padding: 40 }}> <h1>Dashboard</h1>
 
-```
+
   <button onClick={logout}>
     Logout
   </button>
@@ -150,7 +150,7 @@ return (
     </div>
   ))}
 </div>
-```
+
 
 );
 }
