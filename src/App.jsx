@@ -126,6 +126,32 @@ checkUser();
 
 }
 
+  async function signup() {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  if (data.user) {
+    await supabase
+      .from("profiles")
+      .insert([
+        {
+          id: data.user.id,
+          email: data.user.email,
+          role: "student",
+        },
+      ]);
+  }
+
+  alert("Account aangemaakt!");
+}
+
 async function addAssignment() {
 if (!newAssignment) return;
 
@@ -257,6 +283,22 @@ width: 320,
       >
         Login
       </button>
+
+  <button
+  onClick={signup}
+  style={{
+    width: "100%",
+    padding: 10,
+    background: "#0f766e",
+    color: "white",
+    border: "none",
+    borderRadius: 8,
+    marginTop: 10,
+  }}
+>
+  Account aanmaken
+</button>
+  
     </div>
   </div>
 );
