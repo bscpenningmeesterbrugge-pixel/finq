@@ -64,7 +64,7 @@ if (data?.user) {
 }
 
 async function loadAssignments() 
-  loadMessages();
+  
   async function loadMessages() {
 const { data } = await supabase
 .from("messages")
