@@ -417,7 +417,7 @@ Grades
       Inbox
     </h2>
 
-```
+
 <div
   style={{
     display: "flex",
@@ -484,7 +484,7 @@ Grades
     <p>{m.content}</p>
   </div>
 ))}
-```
+
 
   </div>
 )}
