@@ -240,7 +240,10 @@ async function addAssignment() {
 async function submitAssignment(
   assignmentId
 ) {
-  if (!submissionText) return;
+  const text =
+    submissionTexts[assignmentId];
+
+  if (!text) return;
 
   const { error } = await supabase
     .from("submissions")
@@ -248,7 +251,7 @@ async function submitAssignment(
       {
         assignment_id: assignmentId,
         student_id: user.id,
-        content: submissionText,
+        content: text,
       },
     ]);
 
@@ -257,7 +260,10 @@ async function submitAssignment(
     return;
   }
 
-  setSubmissionText("");
+  setSubmissionTexts({
+    ...submissionTexts,
+    [assignmentId]: "",
+  });
 
   loadSubmissions();
 
@@ -802,11 +808,16 @@ Grades
         }}
       >
         <textarea
-          placeholder="Typ je antwoord..."
-          value={submissionText}
-          onChange={(e) =>
-            setSubmissionText(e.target.value)
-          }
+  placeholder="Typ je antwoord..."
+  value={
+    submissionTexts[a.id] || ""
+  }
+  onChange={(e) =>
+    setSubmissionTexts({
+      ...submissionTexts,
+      [a.id]: e.target.value,
+    })
+  }
           rows={4}
           style={{
             padding: 12,
