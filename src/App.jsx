@@ -59,22 +59,35 @@ checkUser();
 }, []);
 
 async function checkUser() {
-const { data } = await supabase.auth.getUser();
+  const { data } =
+    await supabase.auth.getUser();
 
+  const currentUser = data?.user;
 
-setUser(data?.user || null);
+  setUser(currentUser);
 
-setRole(data?.user?.user_metadata?.role || "student");
-  
-if (data?.user) {
-  loadAssignments();
+  if (!currentUser) return;
+
+  // profiel ophalen
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", currentUser.id)
+    .single();
+
+  const userRole =
+    profile?.role || "student";
+
+  setRole(userRole);
+
   loadMessages();
   loadGrades();
-  loadProfile(data.user.id);
   loadStudents();
-}
 
-
+  loadAssignments(
+    currentUser.id,
+    userRole
+  );
 }
 
 async function loadStudents() {
@@ -88,20 +101,31 @@ async function loadStudents() {
 
 
   
-async function loadAssignments() {
+async function loadAssignments(
+  userId,
+  userRole
+) {
   let query = supabase
     .from("assignments")
     .select("*");
 
-  if (role === "student" && user) {
-    query = query.eq("student_id", user.id);
+  // student ziet enkel eigen opdrachten
+  if (userRole === "student") {
+    query = query.eq(
+      "student_id",
+      userId
+    );
   }
 
-  const { data } = await query;
+  const { data, error } = await query;
+
+  if (error) {
+    console.log(error);
+    return;
+  }
 
   setAssignments(data || []);
 }
-  
   async function loadMessages() {
 const { data } = await supabase
 .from("messages")
@@ -120,17 +144,6 @@ setMessages(data || []);
   setGrades(data || []);
 }
 
-  async function loadProfile(userId) {
-  const { data } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", userId)
-    .single();
-
-  if (data) {
-    setRole(data.role);
-  }
-}
 
 async function login() {
 const { error } = await supabase.auth.signInWithPassword({
@@ -149,8 +162,7 @@ if (data?.user) {
   loadAssignments();
   loadMessages();
   loadGrades();
-  loadProfile(data.user.id);
-  loadStudents();
+   loadStudents();
 }
 
 }
