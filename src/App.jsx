@@ -53,6 +53,8 @@ const [newMessageTitle, setNewMessageTitle] = useState("");
 const [newMessageContent, setNewMessageContent] = useState("");
  const [submissionTexts, setSubmissionTexts] = useState({})
 const [submissions, setSubmissions] = useState([]);
+  const [feedback, setFeedback] = useState("");
+const [submissionGrade, setSubmissionGrade] = useState("");
 
 
 
@@ -140,7 +142,29 @@ async function loadSubmissions() {
   setSubmissions(data || []);
 }
 
+async function reviewSubmission(
+  submissionId
+) {
+  const { error } = await supabase
+    .from("submissions")
+    .update({
+      grade: submissionGrade,
+      feedback: feedback,
+    })
+    .eq("id", submissionId);
 
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  setSubmissionGrade("");
+  setFeedback("");
+
+  loadSubmissions();
+
+  alert("Verbetering opgeslagen!");
+}
 
   
   async function loadMessages() {
@@ -557,6 +581,14 @@ onClick={() => setActivePage("grades")}
 
 Grades
 
+  <button
+  style={menuButton}
+  onClick={() =>
+    setActivePage("submissions")
+  }
+>
+  Submissions
+</button>
 
   </button>
 
@@ -1036,6 +1068,135 @@ Grades
 )}
 
   </div>
+
+{activePage === "submissions" && (
+  <div
+    style={{
+      background: "white",
+      borderRadius: 20,
+      padding: 24,
+    }}
+  >
+    <h2 style={{ marginBottom: 20 }}>
+      Ingediende opdrachten
+    </h2>
+
+    {submissions.map((s) => (
+      <div
+        key={s.id}
+        style={{
+          padding: 18,
+          borderRadius: 14,
+          background: "#f8fafc",
+          marginBottom: 16,
+          border: "1px solid #ddd",
+        }}
+      >
+        <p>
+          <strong>Student:</strong>{" "}
+          {s.student_id}
+        </p>
+
+        <p>
+          <strong>Assignment:</strong>{" "}
+          {s.assignment_id}
+        </p>
+
+        <p>
+          <strong>Antwoord:</strong>
+        </p>
+
+        <div
+          style={{
+            background: "white",
+            padding: 12,
+            borderRadius: 10,
+            marginTop: 8,
+            marginBottom: 14,
+          }}
+        >
+          {s.content}
+        </div>
+
+        {role === "teacher" && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+            }}
+          >
+            <input
+              placeholder="Score /20"
+              type="number"
+              value={submissionGrade}
+              onChange={(e) =>
+                setSubmissionGrade(
+                  e.target.value
+                )
+              }
+              style={{
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #ddd",
+              }}
+            />
+
+            <textarea
+              placeholder="Feedback..."
+              value={feedback}
+              onChange={(e) =>
+                setFeedback(e.target.value)
+              }
+              rows={3}
+              style={{
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #ddd",
+              }}
+            />
+
+            <button
+              onClick={() =>
+                reviewSubmission(s.id)
+              }
+              style={{
+                background: "#0f766e",
+                color: "white",
+                border: "none",
+                padding: "10px 16px",
+                borderRadius: 10,
+                cursor: "pointer",
+              }}
+            >
+              Verbeteren
+            </button>
+          </div>
+        )}
+
+        {s.grade && (
+          <div
+            style={{
+              marginTop: 14,
+              background: "#dcfce7",
+              padding: 12,
+              borderRadius: 10,
+            }}
+          >
+            <strong>Score:</strong>{" "}
+            {s.grade}/20
+
+            <br />
+
+            <strong>Feedback:</strong>{" "}
+            {s.feedback}
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+)}
+  
 </main>
 
 </div>
