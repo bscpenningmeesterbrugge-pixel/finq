@@ -51,7 +51,7 @@ const [subject, setSubject] = useState("");
 const [score, setScore] = useState("");
 const [newMessageTitle, setNewMessageTitle] = useState("");
 const [newMessageContent, setNewMessageContent] = useState("");
-  const [submissionText, setSubmissionText] = useState("");
+ const [submissionTexts, setSubmissionTexts] = useState({})
 const [submissions, setSubmissions] = useState([]);
 
 
