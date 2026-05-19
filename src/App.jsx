@@ -57,9 +57,7 @@ const [submissions, setSubmissions] = useState([]);
 
 
 useEffect(() => {
-if (data.user) {
   checkUser();
-}
 }, []);
 
 async function checkUser() {
@@ -209,8 +207,11 @@ async function login() {
       ]);
   }
 
-  alert("Account aangemaakt!");
-    checkUser();
+ alert("Account aangemaakt!");
+
+if (data.user) {
+  checkUser();
+}
 }
 
 async function addAssignment() {
