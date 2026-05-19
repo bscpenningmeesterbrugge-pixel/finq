@@ -42,8 +42,7 @@ const [activePage, setActivePage] = useState("dashboard");
   const [newAssignment, setNewAssignment] = useState("");
 
 const [messages, setMessages] = useState([]);
-  const [role, setRole] = useState("student");
-  const [grades, setGrades] = useState([]);
+   const [grades, setGrades] = useState([]);
 const [studentName, setStudentName] = useState("");
 const [subject, setSubject] = useState("");
 const [score, setScore] = useState("");
@@ -602,44 +601,7 @@ Grades
     <h2 style={{ marginBottom: 20 }}>
       Recent Assignments
     </h2>
-    {role === "teacher" && (
-
-  <div
-    style={{
-      display: "flex",
-      gap: 10,
-      marginBottom: 20,
-    }}
-  >
-    <input
-      value={newAssignment}
-      onChange={(e) =>
-        setNewAssignment(e.target.value)
-      }
-      placeholder="Nieuwe opdracht..."
-      style={{
-        flex: 1,
-        padding: 12,
-        borderRadius: 10,
-        border: "1px solid #ddd",
-      }}
-    />
-
-    <button
-      onClick={addAssignment}
-      style={{
-        background: "#0f766e",
-        color: "white",
-        border: "none",
-        padding: "12px 18px",
-        borderRadius: 10,
-        cursor: "pointer",
-      }}
-    >
-      Toevoegen
-    </button>
-  </div>
-)}
+   
 
 
 {assignments.map((a) => (
@@ -656,7 +618,57 @@ Grades
     <strong>{a.title}</strong>
   </div>
 ))}
+{role === "teacher" && (
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: 10,
+      marginBottom: 20,
+    }}
+  >
+    <input
+      value={newMessageTitle}
+      onChange={(e) =>
+        setNewMessageTitle(e.target.value)
+      }
+      placeholder="Titel"
+      style={{
+        padding: 12,
+        borderRadius: 10,
+        border: "1px solid #ddd",
+      }}
+    />
 
+    <textarea
+      value={newMessageContent}
+      onChange={(e) =>
+        setNewMessageContent(e.target.value)
+      }
+      placeholder="Bericht..."
+      rows={4}
+      style={{
+        padding: 12,
+        borderRadius: 10,
+        border: "1px solid #ddd",
+      }}
+    />
+
+    <button
+      onClick={addMessage}
+      style={{
+        background: "#0f766e",
+        color: "white",
+        border: "none",
+        padding: "12px 18px",
+        borderRadius: 10,
+        cursor: "pointer",
+      }}
+    >
+      Bericht posten
+    </button>
+  </div>
+)}
 
   </div>
 )}
@@ -826,7 +838,7 @@ Grades
         Punt toevoegen
       </button>
     </div>
-
+)}
     {grades.map((g) => (
       <div
         key={g.id}
