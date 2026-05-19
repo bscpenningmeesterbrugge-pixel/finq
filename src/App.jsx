@@ -485,12 +485,32 @@ Grades
   >
     <div>
   <h1 style={{ color: "#0f172a", margin: 0 }}>
-    Dashboard
+    {role === "teacher"
+  ? "Teacher Dashboard"
+  : "Student Dashboard"}
   </h1>
 
-  <p style={{ color: "#64748b" }}>
-    Rol: {role}
-  </p>
+  <div
+  style={{
+    display: "inline-block",
+    background:
+      role === "teacher"
+        ? "#dcfce7"
+        : "#dbeafe",
+    color:
+      role === "teacher"
+        ? "#166534"
+        : "#1d4ed8",
+    padding: "6px 14px",
+    borderRadius: 999,
+    fontWeight: "bold",
+    marginTop: 8,
+  }}
+>
+  {role === "teacher"
+    ? "👨‍🏫 Teacher"
+    : "🎓 Student"}
+</div>
 </div>
 
     <button
@@ -528,12 +548,16 @@ Grades
 
       <div style={cardStyle}>
         <h3>Messages</h3>
-        <p style={bigNumber}>12</p>
+       <p style={bigNumber}>
+  {messages.length}
+</p>
       </div>
 
       <div style={cardStyle}>
         <h3>Notifications</h3>
-        <p style={bigNumber}>5</p>
+       <p style={bigNumber}>
+  {assignments.length + messages.length}
+</p>
       </div>
     </div>
 
@@ -570,6 +594,44 @@ Grades
     <h2 style={{ marginBottom: 20 }}>
       Recent Assignments
     </h2>
+    {role === "teacher" && (
+
+  <div
+    style={{
+      display: "flex",
+      gap: 10,
+      marginBottom: 20,
+    }}
+  >
+    <input
+      value={newAssignment}
+      onChange={(e) =>
+        setNewAssignment(e.target.value)
+      }
+      placeholder="Nieuwe opdracht..."
+      style={{
+        flex: 1,
+        padding: 12,
+        borderRadius: 10,
+        border: "1px solid #ddd",
+      }}
+    />
+
+    <button
+      onClick={addAssignment}
+      style={{
+        background: "#0f766e",
+        color: "white",
+        border: "none",
+        padding: "12px 18px",
+        borderRadius: 10,
+        cursor: "pointer",
+      }}
+    >
+      Toevoegen
+    </button>
+  </div>
+)}
 
 
 {assignments.map((a) => (
