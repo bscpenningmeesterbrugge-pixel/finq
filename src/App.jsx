@@ -40,9 +40,12 @@ const [assignments, setAssignments] = useState([]);
 const [activePage, setActivePage] = useState("dashboard");
   const [role, setRole] = useState("student");
   const [newAssignment, setNewAssignment] = useState("");
+  
 
 const [messages, setMessages] = useState([]);
    const [grades, setGrades] = useState([]);
+  const [students, setStudents] = useState([]);
+const [selectedStudent, setSelectedStudent] = useState("");
 const [studentName, setStudentName] = useState("");
 const [subject, setSubject] = useState("");
 const [score, setScore] = useState("");
@@ -73,10 +76,28 @@ loadProfile(data.user.id);
 
 }
 
+async function loadStudents() {
+  const { data } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("role", "student");
+
+  setStudents(data || []);
+}
+
+
+  
 async function loadAssignments() {
 const { data } = await supabase
-.from("assignments")
-.select("*");
+let query = supabase
+  .from("assignments")
+  .select("*");
+
+if (role === "student") {
+  query = query.eq("student_id", user.id);
+}
+
+const { data } = await query;
 
 setAssignments(data || []);
 }
@@ -125,7 +146,13 @@ if (error) {
 }
 
 checkUser();
-
+if (data?.user) {
+  loadAssignments();
+  loadMessages();
+  loadGrades();
+  loadProfile(data.user.id);
+  loadStudents();
+}
 
 }
 
@@ -162,26 +189,52 @@ checkUser();
 }
 
 async function addAssignment() {
-if (!newAssignment) return;
+  if (!newAssignment || !selectedStudent) return;
 
-const { error } = await supabase
-.from("assignments")
-.insert([
-{
-title: newAssignment,
-},
-]);
+  const { error } = await supabase
+    .from("assignments")
+    .insert([
+      {
+        title: newAssignment,
+        student_id: selectedStudent,
+      },
+    ]);
 
-if (error) {
-alert(error.message);
-return;
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  setNewAssignment("");
+  setSelectedStudent("");
+
+  loadAssignments();
 }
+  <select
+  value={selectedStudent}
+  onChange={(e) =>
+    setSelectedStudent(e.target.value)
+  }
+  style={{
+    padding: 12,
+    borderRadius: 10,
+    border: "1px solid #ddd",
+  }}
+>
+  <option value="">
+    Kies student
+  </option>
 
-setNewAssignment("");
-
-loadAssignments();
-}
-
+  {students.map((s) => (
+    <option
+      key={s.id}
+      value={s.id}
+    >
+      {s.email}
+    </option>
+  ))}
+</select>
+  
 async function addMessage() {
 if (!newMessageTitle) return;
 
