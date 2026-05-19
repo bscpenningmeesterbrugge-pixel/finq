@@ -51,6 +51,8 @@ const [subject, setSubject] = useState("");
 const [score, setScore] = useState("");
 const [newMessageTitle, setNewMessageTitle] = useState("");
 const [newMessageContent, setNewMessageContent] = useState("");
+  const [submissionText, setSubmissionText] = useState("");
+const [submissions, setSubmissions] = useState([]);
 
 
 
@@ -126,6 +128,21 @@ async function loadAssignments(
 
   setAssignments(data || []);
 }
+
+async function loadSubmissions() {
+  const { data } = await supabase
+    .from("submissions")
+    .select("*")
+    .order("created_at", {
+      ascending: false,
+    });
+
+  setSubmissions(data || []);
+}
+
+
+
+  
   async function loadMessages() {
 const { data } = await supabase
 .from("messages")
@@ -163,6 +180,7 @@ if (data?.user) {
   loadMessages();
   loadGrades();
    loadStudents();
+  loadSubmissions();
 }
 
 }
@@ -245,6 +263,34 @@ async function addAssignment() {
     </option>
   ))}
 </select>
+
+async function submitAssignment(
+  assignmentId
+) {
+  if (!submissionText) return;
+
+  const { error } = await supabase
+    .from("submissions")
+    .insert([
+      {
+        assignment_id: assignmentId,
+        student_id: user.id,
+        content: submissionText,
+      },
+    ]);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  setSubmissionText("");
+
+  loadSubmissions();
+
+  alert("Assignment ingediend!");
+}
+
   
 async function addMessage() {
 if (!newMessageTitle) return;
@@ -733,6 +779,60 @@ Grades
 )}
 
 {assignments.map((a) => (
+  <div
+    key={a.id}
+    style={{
+      padding: 18,
+      borderRadius: 14,
+      background: "#ecfeff",
+      marginBottom: 12,
+      border: "1px solid #a5f3fc",
+    }}
+  >
+    <strong>{a.title}</strong>
+
+    {role === "student" && (
+      <div
+        style={{
+          marginTop: 14,
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+        }}
+      >
+        <textarea
+          placeholder="Typ je antwoord..."
+          value={submissionText}
+          onChange={(e) =>
+            setSubmissionText(e.target.value)
+          }
+          rows={4}
+          style={{
+            padding: 12,
+            borderRadius: 10,
+            border: "1px solid #ddd",
+          }}
+        />
+
+        <button
+          onClick={() =>
+            submitAssignment(a.id)
+          }
+          style={{
+            background: "#0f766e",
+            color: "white",
+            border: "none",
+            padding: "10px 16px",
+            borderRadius: 10,
+            cursor: "pointer",
+          }}
+        >
+          Assignment indienen
+        </button>
+      </div>
+    )}
+  </div>
+))}
   <div
     key={a.id}
     style={{
