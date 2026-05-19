@@ -707,7 +707,7 @@ Grades
       >
         <p>
           <strong>Student ID:</strong>{" "}
-          {s.student_id}
+          {s.student_email}
         </p>
 
         <p>
