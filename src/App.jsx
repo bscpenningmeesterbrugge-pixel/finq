@@ -301,9 +301,7 @@ loadMessages();
     .from("grades")
     .insert([
       {
-        student: studentName,
-        subject,
-        score,
+       student_id: selectedStudent
       },
     ]);
 
