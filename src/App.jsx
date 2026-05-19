@@ -68,9 +68,10 @@ setRole(data?.user?.user_metadata?.role || "student");
   
 if (data?.user) {
   loadAssignments();
-loadMessages();
-loadGrades();
-loadProfile(data.user.id);
+  loadMessages();
+  loadGrades();
+  loadProfile(data.user.id);
+  loadStudents();
 }
 
 
@@ -88,20 +89,18 @@ async function loadStudents() {
 
   
 async function loadAssignments() {
-const { data } = await supabase
-let query = supabase
-  .from("assignments")
-  .select("*");
+  let query = supabase
+    .from("assignments")
+    .select("*");
 
-if (role === "student") {
-  query = query.eq("student_id", user.id);
+  if (role === "student" && user) {
+    query = query.eq("student_id", user.id);
+  }
+
+  const { data } = await query;
+
+  setAssignments(data || []);
 }
-
-const { data } = await query;
-
-setAssignments(data || []);
-}
-
   
   async function loadMessages() {
 const { data } = await supabase
@@ -657,6 +656,69 @@ Grades
     </h2>
    
 
+
+{role === "teacher" && (
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: 10,
+      marginBottom: 20,
+    }}
+  >
+    <input
+      value={newAssignment}
+      onChange={(e) =>
+        setNewAssignment(e.target.value)
+      }
+      placeholder="Nieuwe opdracht..."
+      style={{
+        padding: 12,
+        borderRadius: 10,
+        border: "1px solid #ddd",
+      }}
+    />
+
+    <select
+      value={selectedStudent}
+      onChange={(e) =>
+        setSelectedStudent(e.target.value)
+      }
+      style={{
+        padding: 12,
+        borderRadius: 10,
+        border: "1px solid #ddd",
+      }}
+    >
+      <option value="">
+        Kies student
+      </option>
+
+      {students.map((s) => (
+        <option
+          key={s.id}
+          value={s.id}
+        >
+          {s.email}
+        </option>
+      ))}
+    </select>
+
+    <button
+      onClick={addAssignment}
+      style={{
+        background: "#0f766e",
+        color: "white",
+        border: "none",
+        padding: "12px 18px",
+        borderRadius: 10,
+        cursor: "pointer",
+      }}
+    >
+      Assignment toewijzen
+    </button>
+  </div>
+)}
 
 {assignments.map((a) => (
   <div
