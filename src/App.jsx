@@ -42,6 +42,7 @@ const [activePage, setActivePage] = useState("dashboard");
   const [newAssignment, setNewAssignment] = useState("");
 
 const [messages, setMessages] = useState([]);
+  const [role, setRole] = useState("student");
   const [grades, setGrades] = useState([]);
 const [studentName, setStudentName] = useState("");
 const [subject, setSubject] = useState("");
@@ -61,6 +62,8 @@ const { data } = await supabase.auth.getUser();
 
 setUser(data?.user || null);
 
+setRole(data?.user?.user_metadata?.role || "student");
+  
 if (data?.user) {
   loadAssignments();
 loadMessages();
@@ -129,9 +132,14 @@ checkUser();
 
   async function signup() {
   const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-  });
+  email,
+  password,
+  options: {
+    data: {
+      role: role,
+    },
+  },
+});
 
   if (error) {
     alert(error.message);
@@ -703,6 +711,7 @@ Grades
     }}
   />
 
+  {role === "teacher" && (
   <button
     onClick={addMessage}
     style={{
@@ -714,6 +723,9 @@ Grades
       cursor: "pointer",
     }}
   >
+    Bericht posten
+  </button>
+)}
     Bericht posten
   </button>
 </div>
