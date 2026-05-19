@@ -35,6 +35,7 @@ console.log(import.meta.env.VITE_SUPABASE_ANON_KEY)
 const [user, setUser] = useState(null);
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState("student");
 const [assignments, setAssignments] = useState([]);
 const [activePage, setActivePage] = useState("dashboard");
   const [role, setRole] = useState("student");
@@ -144,7 +145,7 @@ checkUser();
         {
           id: data.user.id,
           email: data.user.email,
-          role: "student",
+          role: selectedRole,
         },
       ]);
   }
@@ -270,6 +271,91 @@ width: 320,
         }}
       />
 
+<div
+  style={{
+    marginBottom: 20,
+  }}
+>
+  <p
+    style={{
+      marginBottom: 10,
+      fontWeight: "bold",
+      color: "#0f172a",
+    }}
+  >
+    Account type
+  </p>
+
+  <div
+    style={{
+      background: "#e2e8f0",
+      borderRadius: 999,
+      padding: 4,
+      display: "flex",
+      position: "relative",
+    }}
+  >
+    <div
+      style={{
+        position: "absolute",
+        top: 4,
+        left:
+          selectedRole === "student"
+            ? 4
+            : "50%",
+        width: "calc(50% - 4px)",
+        height: "calc(100% - 8px)",
+        background: "#0f766e",
+        borderRadius: 999,
+        transition: "all 0.25s ease",
+      }}
+    />
+
+    <button
+      onClick={() =>
+        setSelectedRole("student")
+      }
+      style={{
+        flex: 1,
+        padding: 10,
+        border: "none",
+        background: "transparent",
+        color:
+          selectedRole === "student"
+            ? "white"
+            : "#0f172a",
+        fontWeight: "bold",
+        zIndex: 2,
+        cursor: "pointer",
+      }}
+    >
+      Student
+    </button>
+
+    <button
+      onClick={() =>
+        setSelectedRole("teacher")
+      }
+      style={{
+        flex: 1,
+        padding: 10,
+        border: "none",
+        background: "transparent",
+        color:
+          selectedRole === "teacher"
+            ? "white"
+            : "#0f172a",
+        fontWeight: "bold",
+        zIndex: 2,
+        cursor: "pointer",
+      }}
+    >
+      Teacher
+    </button>
+  </div>
+</div>
+
+  
       <button
         onClick={login}
         style={{
