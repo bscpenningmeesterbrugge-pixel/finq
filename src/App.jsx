@@ -135,7 +135,7 @@ checkUser();
   password,
   options: {
     data: {
-      role: role,
+     role: selectedRole,
     },
   },
 });
@@ -158,6 +158,7 @@ checkUser();
   }
 
   alert("Account aangemaakt!");
+    checkUser();
 }
 
 async function addAssignment() {
@@ -618,57 +619,6 @@ Grades
     <strong>{a.title}</strong>
   </div>
 ))}
-{role === "teacher" && (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: 10,
-      marginBottom: 20,
-    }}
-  >
-    <input
-      value={newMessageTitle}
-      onChange={(e) =>
-        setNewMessageTitle(e.target.value)
-      }
-      placeholder="Titel"
-      style={{
-        padding: 12,
-        borderRadius: 10,
-        border: "1px solid #ddd",
-      }}
-    />
-
-    <textarea
-      value={newMessageContent}
-      onChange={(e) =>
-        setNewMessageContent(e.target.value)
-      }
-      placeholder="Bericht..."
-      rows={4}
-      style={{
-        padding: 12,
-        borderRadius: 10,
-        border: "1px solid #ddd",
-      }}
-    />
-
-    <button
-      onClick={addMessage}
-      style={{
-        background: "#0f766e",
-        color: "white",
-        border: "none",
-        padding: "12px 18px",
-        borderRadius: 10,
-        cursor: "pointer",
-      }}
-    >
-      Bericht posten
-    </button>
-  </div>
-)}
 
   </div>
 )}
@@ -738,8 +688,7 @@ Grades
     Bericht posten
   </button>
 )}
-    Bericht posten
-  </button>
+    
 </div>
 
     )}
@@ -776,14 +725,15 @@ Grades
       Puntenmodule
     </h2>
 
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 10,
-        marginBottom: 24,
-      }}
-    >
+    {role === "teacher" && (
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: 10,
+      marginBottom: 24,
+    }}
+  >
       <input
         placeholder="Student"
         value={studentName}
