@@ -57,7 +57,9 @@ const [submissions, setSubmissions] = useState([]);
 
 
 useEffect(() => {
-checkUser();
+if (data.user) {
+  checkUser();
+}
 }, []);
 
 async function checkUser() {
@@ -85,7 +87,7 @@ async function checkUser() {
   loadMessages();
   loadGrades();
   loadStudents();
-
+loadSubmissions();
   loadAssignments(
     currentUser.id,
     userRole
@@ -163,26 +165,20 @@ setMessages(data || []);
 
 
 async function login() {
-const { error } = await supabase.auth.signInWithPassword({
-email,
-password,
-});
+  const { data, error } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
+  if (error) {
+    alert(error.message);
+    return;
+  }
 
-if (error) {
-  alert(error.message);
-  return;
-}
-
-checkUser();
-if (data?.user) {
-  loadAssignments();
-  loadMessages();
-  loadGrades();
-   loadStudents();
-  loadSubmissions();
-}
-
+  if (data.user) {
+    checkUser();
+  }
 }
 
   async function signup() {
@@ -237,33 +233,9 @@ async function addAssignment() {
   setNewAssignment("");
   setSelectedStudent("");
 
-  loadAssignments();
+  loadAssignments(user.id, role);
 }
-  <select
-  value={selectedStudent}
-  onChange={(e) =>
-    setSelectedStudent(e.target.value)
-  }
-  style={{
-    padding: 12,
-    borderRadius: 10,
-    border: "1px solid #ddd",
-  }}
->
-  <option value="">
-    Kies student
-  </option>
-
-  {students.map((s) => (
-    <option
-      key={s.id}
-      value={s.id}
-    >
-      {s.email}
-    </option>
-  ))}
-</select>
-
+  
 async function submitAssignment(
   assignmentId
 ) {
@@ -713,7 +685,35 @@ Grades
       Recent Assignments
     </h2>
    
+{role === "teacher" && (
+  <div style={{ marginTop: 40 }}>
+    <h2>Ingediende assignments</h2>
 
+    {submissions.map((s) => (
+      <div
+        key={s.id}
+        style={{
+          padding: 18,
+          borderRadius: 14,
+          background: "#f8fafc",
+          marginTop: 12,
+          border: "1px solid #ddd",
+        }}
+      >
+        <p>
+          <strong>Student ID:</strong>{" "}
+          {s.student_id}
+        </p>
+
+        <p>
+          <strong>Antwoord:</strong>
+        </p>
+
+        <p>{s.content}</p>
+      </div>
+    ))}
+  </div>
+)}
 
 {role === "teacher" && (
   <div
@@ -833,19 +833,7 @@ Grades
     )}
   </div>
 ))}
-  <div
-    key={a.id}
-    style={{
-      padding: 18,
-      borderRadius: 14,
-      background: "#ecfeff",
-      marginBottom: 12,
-      border: "1px solid #a5f3fc",
-    }}
-  >
-    <strong>{a.title}</strong>
-  </div>
-))}
+  
 
   </div>
 )}
