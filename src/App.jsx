@@ -294,11 +294,19 @@ async function submitAssignment(
         content: content,
       },
     ]);
+  
 
   if (error) {
     alert(error.message);
     return;
   }
+
+  await supabase
+  .from("assignments")
+  .update({
+    status: "ingediend",
+  })
+  .eq("id", assignmentId);
 
   setSubmissionTexts({
     ...submissionTexts,
@@ -610,6 +618,15 @@ Inbox
 >
   Submissions
 </button>
+
+  <button
+  style={menuButton}
+  onClick={() =>
+    setActivePage("archive")
+  }
+>
+  Archief
+</button>
 </div>
 
     </aside>
@@ -844,7 +861,14 @@ Inbox
     )}
 
     {/* ASSIGNMENTS */}
-    {assignments.map((a) => (
+    {assignments
+  .filter((a) => a.status !== "ingediend")
+  .sort(
+    (a, b) =>
+      new Date(b.created_at) -
+      new Date(a.created_at)
+  )
+  .map((a) => (
       <div
         key={a.id}
         style={{
@@ -1080,6 +1104,42 @@ Inbox
   >
     Bericht posten
   </button>
+)}
+  {activePage === "archive" && (
+  <div
+    style={{
+      background: "white",
+      borderRadius: 20,
+      padding: 24,
+    }}
+  >
+    <h2>Archief</h2>
+
+    {assignments
+      .filter(
+        (a) => a.status === "ingediend"
+      )
+      .map((a) => (
+        <div
+          key={a.id}
+          style={{
+            padding: 20,
+            marginBottom: 16,
+            borderRadius: 14,
+            background: "#f8fafc",
+            border: "1px solid #ddd",
+          }}
+        >
+          <h3>{a.title}</h3>
+
+          <p>{a.description}</p>
+
+          <p>
+            ✅ Ingediend
+          </p>
+        </div>
+      ))}
+  </div>
 )}
     
 </div>
