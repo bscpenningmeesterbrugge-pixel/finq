@@ -819,16 +819,24 @@ Grades
 
 {assignments.map((a) => (
   <div
-    key={a.id}
-    style={{
-      padding: 18,
-      borderRadius: 14,
-      background: "#ecfeff",
-      marginBottom: 12,
-      border: "1px solid #a5f3fc",
-    }}
-  >
-    <strong>{a.title}</strong>
+  key={a.id}
+  style={{
+    padding: 22,
+    borderRadius: 18,
+    background: "white",
+    marginBottom: 18,
+    border: "1px solid #e2e8f0",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+  }}
+>
+   <h3
+  style={{
+    margin: 0,
+    color: "#0f172a",
+  }}
+>
+  {a.title}
+</h3>
 
     {role === "student" && (
       <div
