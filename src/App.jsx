@@ -710,19 +710,17 @@ Inbox
         marginBottom: 30,
       }}
     >
-      <div style={cardStyle}>
-        <h3>Open Assignments</h3>
+     <div style={cardStyle}>
+  <h3>Open Assignments</h3>
 
-{assignments
-  .filter(
-    (a) => a.status !== "ingediend"
-  )
-  .sort(
-    (a, b) =>
-      new Date(b.created_at) -
-      new Date(a.created_at)
-  )
-  .map((a) => (
+  <p style={bigNumber}>
+    {
+      assignments.filter(
+        (a) => a.status !== "ingediend"
+      ).length
+    }
+  </p>
+</div>
       </div>
 
       <div style={cardStyle}>
