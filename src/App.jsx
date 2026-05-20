@@ -295,6 +295,21 @@ async function submitAssignment(
       },
     ]);
 
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  setSubmissionTexts({
+    ...submissionTexts,
+    [assignmentId]: "",
+  });
+
+  loadSubmissions();
+
+  alert("Assignment ingediend!");
+}
+
   
 async function addMessage() {
 if (!newMessageTitle) return;
@@ -319,24 +334,33 @@ setNewMessageContent("");
 loadMessages();
 }
 
-  async function addGrade() {
-  if (!studentName || !subject || !score) return;
+ async function addGrade() {
+  if (!studentName || !subject || !score)
+    return;
 
   const { error } = await supabase
     .from("grades")
     .insert([
       {
-       const { error } = await supabase
-  .from("grades")
-  .insert([
-    {
-      student: studentName,
-      subject,
-      score,
-    },
-  ]);
+        student: studentName,
+        subject: subject,
+        score: score,
       },
     ]);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  setStudentName("");
+  setSubject("");
+  setScore("");
+
+  loadGrades();
+
+  alert("Punt toegevoegd!");
+}
 
   if (error) {
     alert(error.message);
@@ -596,15 +620,6 @@ Inbox
 >
   Submissions
 </button>
-  onClick={() =>
-    setActivePage("submissions")
-  }
->
-  Submissions
-</button>
-
-  </button>
-
 </div>
 
     </aside>
@@ -794,19 +809,7 @@ Inbox
     border: "1px solid #ddd",
   }}
 />
-          <input
-  type="date"
-  value={assignmentDeadline}
-  onChange={(e) =>
-    setAssignmentDeadline(e.target.value)
-  }
-  style={{
-    padding: 14,
-    borderRadius: 12,
-    border: "1px solid #ddd",
-  }}
-/>
-
+         
           <select
             value={selectedStudent}
             onChange={(e) =>
@@ -873,12 +876,23 @@ Inbox
           }}
         >
          <div>
+  <h3
     style={{
       marginBottom: 10,
       color: "#0f172a",
     }}
   >
     {a.title}
+  </h3>
+
+  <p
+    style={{
+      color: "#475569",
+      lineHeight: 1.6,
+    }}
+  >
+    {a.description}
+  </p>
   
 
   <p
