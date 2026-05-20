@@ -711,10 +711,18 @@ Inbox
       }}
     >
       <div style={cardStyle}>
-        <h3>Assignments</h3>
-        <p style={bigNumber}>
-          {assignments.length}
-        </p>
+        <h3>Open Assignments</h3>
+
+{assignments
+  .filter(
+    (a) => a.status !== "ingediend"
+  )
+  .sort(
+    (a, b) =>
+      new Date(b.created_at) -
+      new Date(a.created_at)
+  )
+  .map((a) => (
       </div>
 
       <div style={cardStyle}>
@@ -1122,7 +1130,9 @@ Inbox
       padding: 24,
     }}
   >
-    <h2>Archief</h2>
+    <h2 style={{ marginBottom: 20 }}>
+      Archief
+    </h2>
 
     {assignments
       .filter(
@@ -1132,10 +1142,10 @@ Inbox
         <div
           key={a.id}
           style={{
-            padding: 20,
-            marginBottom: 16,
+            padding: 18,
             borderRadius: 14,
             background: "#f8fafc",
+            marginBottom: 14,
             border: "1px solid #ddd",
           }}
         >
@@ -1143,9 +1153,19 @@ Inbox
 
           <p>{a.description}</p>
 
-          <p>
+          <div
+            style={{
+              marginTop: 10,
+              background: "#dcfce7",
+              color: "#166534",
+              display: "inline-block",
+              padding: "6px 12px",
+              borderRadius: 999,
+              fontWeight: "bold",
+            }}
+          >
             ✅ Ingediend
-          </p>
+          </div>
         </div>
       ))}
   </div>
