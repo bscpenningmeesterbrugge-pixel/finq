@@ -266,10 +266,10 @@ async function addAssignment() {
 async function submitAssignment(
   assignmentId
 ) {
-  const text =
+  const content =
     submissionTexts[assignmentId];
 
-  if (!text) return;
+  if (!content) return;
 
   const { error } = await supabase
     .from("submissions")
@@ -277,9 +277,24 @@ async function submitAssignment(
       {
         assignment_id: assignmentId,
         student_id: user.id,
-        content: text,
+        content: content,
       },
     ]);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  setSubmissionTexts({
+    ...submissionTexts,
+    [assignmentId]: "",
+  });
+
+  loadSubmissions();
+
+  alert("Assignment ingediend!");
+}
 
   if (error) {
     alert(error.message);
