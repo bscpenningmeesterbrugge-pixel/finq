@@ -17,6 +17,14 @@ const menuButton = {
   fontSize: 16,
 };
 
+const inputStyle = {
+  padding: 14,
+  borderRadius: 12,
+  border: "1px solid #ddd",
+  fontSize: 15,
+  outline: "none",
+};
+
 const cardStyle = {
   background: "white",
   borderRadius: 20,
@@ -287,36 +295,6 @@ async function submitAssignment(
       },
     ]);
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  setSubmissionTexts({
-    ...submissionTexts,
-    [assignmentId]: "",
-  });
-
-  loadSubmissions();
-
-  alert("Assignment ingediend!");
-}
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  setSubmissionTexts({
-    ...submissionTexts,
-    [assignmentId]: "",
-  });
-
-  loadSubmissions();
-
-  alert("Assignment ingediend!");
-}
-
   
 async function addMessage() {
 if (!newMessageTitle) return;
@@ -348,7 +326,15 @@ loadMessages();
     .from("grades")
     .insert([
       {
-       student_id: selectedStudent
+       const { error } = await supabase
+  .from("grades")
+  .insert([
+    {
+      student: studentName,
+      subject,
+      score,
+    },
+  ]);
       },
     ]);
 
@@ -596,16 +582,20 @@ Inbox
   </button>
 
 <button
-style={menuButton}
-onClick={() => setActivePage("grades")}
-
->
-
-
-Grades
-
-  <button
   style={menuButton}
+  onClick={() => setActivePage("grades")}
+>
+  Grades
+</button>
+
+<button
+  style={menuButton}
+  onClick={() =>
+    setActivePage("submissions")
+  }
+>
+  Submissions
+</button>
   onClick={() =>
     setActivePage("submissions")
   }
@@ -766,8 +756,19 @@ Grades
           }}
         >
           <input
-            value={newAssignment}
-            <textarea
+  value={newAssignment}
+  onChange={(e) =>
+    setNewAssignment(e.target.value)
+  }
+  placeholder="Titel van assignment"
+  style={{
+    padding: 14,
+    borderRadius: 12,
+    border: "1px solid #ddd",
+  }}
+/>
+
+<textarea
   value={assignmentDescription}
   onChange={(e) =>
     setAssignmentDescription(e.target.value)
@@ -782,6 +783,18 @@ Grades
 />
 
 <input
+  type="date"
+  value={assignmentDeadline}
+  onChange={(e) =>
+    setAssignmentDeadline(e.target.value)
+  }
+  style={{
+    padding: 14,
+    borderRadius: 12,
+    border: "1px solid #ddd",
+  }}
+/>
+          <input
   type="date"
   value={assignmentDeadline}
   onChange={(e) =>
@@ -859,21 +872,14 @@ Grades
             marginBottom: 14,
           }}
         >
-          <h3
-            style={{
-              margin: 0,
-              color: "#0f172a",
-            }}
-          >
-           <div>
-  <h3
+         <div>
     style={{
       marginBottom: 10,
       color: "#0f172a",
     }}
   >
     {a.title}
-  </h3>
+  
 
   <p
     style={{
