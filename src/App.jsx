@@ -7,25 +7,27 @@ import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
 const menuButton = {
-  background: "rgba(255,255,255,0.08)",
+  background: "#1e293b",
   color: "white",
   border: "none",
-  padding: 14,
-  borderRadius: 12,
+  padding: 16,
+  borderRadius: 14,
   textAlign: "left",
   cursor: "pointer",
+  fontSize: 16,
 };
 
 const cardStyle = {
   background: "white",
   borderRadius: 20,
   padding: 24,
+  boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
 };
 
 const bigNumber = {
-  fontSize: 36,
+  fontSize: 42,
   fontWeight: "bold",
-  color: "#0f766e",
+  color: "#2563eb",
 };
 
 export default function App() {
@@ -424,7 +426,7 @@ width: 320,
             : "50%",
         width: "calc(50% - 4px)",
         height: "calc(100% - 8px)",
-        background: "#0f766e",
+       background: "#2563eb",
         borderRadius: 999,
         transition: "all 0.25s ease",
       }}
@@ -494,7 +496,7 @@ width: 320,
   style={{
     width: "100%",
     padding: 10,
-    background: "#0f766e",
+   background: "#2563eb",
     color: "white",
     border: "none",
     borderRadius: 8,
@@ -525,7 +527,7 @@ return (
     <aside
       style={{
         width: 260,
-        background: "linear-gradient(180deg,#0f172a,#134e4a)",
+       background: "linear-gradient(180deg,#0f172a,#1e293b)",
         color: "white",
         padding: 24,
       }}
@@ -802,7 +804,7 @@ Grades
     <button
       onClick={addAssignment}
       style={{
-        background: "#0f766e",
+        background: "#2563eb",
         color: "white",
         border: "none",
         padding: "12px 18px",
@@ -861,7 +863,7 @@ Grades
             submitAssignment(a.id)
           }
           style={{
-            background: "#0f766e",
+           background: "#2563eb",
             color: "white",
             border: "none",
             padding: "10px 16px",
@@ -934,7 +936,7 @@ Grades
   <button
     onClick={addMessage}
     style={{
-      background: "#0f766e",
+     background: "#2563eb",
       color: "white",
       border: "none",
       padding: "12px 18px",
@@ -1034,7 +1036,7 @@ Grades
       <button
         onClick={addGrade}
         style={{
-          background: "#0f766e",
+          background: "#2563eb",
           color: "white",
           border: "none",
           padding: "12px 18px",
@@ -1161,7 +1163,7 @@ Grades
                 reviewSubmission(s.id)
               }
               style={{
-                background: "#0f766e",
+               background: "#2563eb",
                 color: "white",
                 border: "none",
                 padding: "10px 16px",
