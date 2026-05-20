@@ -39,6 +39,8 @@ const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
   const [selectedRole, setSelectedRole] = useState("student");
 const [assignments, setAssignments] = useState([]);
+  const [assignmentDescription, setAssignmentDescription] = useState("");
+const [assignmentDeadline, setAssignmentDeadline] = useState("");
 const [activePage, setActivePage] = useState("dashboard");
   const [role, setRole] = useState("student");
   const [newAssignment, setNewAssignment] = useState("");
@@ -246,11 +248,13 @@ async function addAssignment() {
   const { error } = await supabase
     .from("assignments")
     .insert([
-      {
-        title: newAssignment,
-        student_id: selectedStudent,
-      },
-    ]);
+  {
+    title: newAssignment,
+    description: assignmentDescription,
+    deadline: assignmentDeadline,
+    student_id: selectedStudent,
+  },
+]);
 
   if (error) {
     alert(error.message);
@@ -258,6 +262,8 @@ async function addAssignment() {
   }
 
   setNewAssignment("");
+  setAssignmentDescription("");
+setAssignmentDeadline("");
   setSelectedStudent("");
 
   loadAssignments(user.id, role);
@@ -761,16 +767,32 @@ Grades
         >
           <input
             value={newAssignment}
-            onChange={(e) =>
-              setNewAssignment(e.target.value)
-            }
-            placeholder="Titel van assignment"
-            style={{
-              padding: 14,
-              borderRadius: 12,
-              border: "1px solid #ddd",
-            }}
-          />
+            <textarea
+  value={assignmentDescription}
+  onChange={(e) =>
+    setAssignmentDescription(e.target.value)
+  }
+  placeholder="Beschrijving..."
+  rows={4}
+  style={{
+    padding: 14,
+    borderRadius: 12,
+    border: "1px solid #ddd",
+  }}
+/>
+
+<input
+  type="date"
+  value={assignmentDeadline}
+  onChange={(e) =>
+    setAssignmentDeadline(e.target.value)
+  }
+  style={{
+    padding: 14,
+    borderRadius: 12,
+    border: "1px solid #ddd",
+  }}
+/>
 
           <select
             value={selectedStudent}
@@ -843,7 +865,58 @@ Grades
               color: "#0f172a",
             }}
           >
-            {a.title}
+           <div>
+  <h3
+    style={{
+      marginBottom: 10,
+      color: "#0f172a",
+    }}
+  >
+    {a.title}
+  </h3>
+
+  <p
+    style={{
+      color: "#475569",
+      lineHeight: 1.6,
+    }}
+  >
+    {a.description}
+  </p>
+
+  <div
+    style={{
+      marginTop: 14,
+      display: "flex",
+      gap: 10,
+      flexWrap: "wrap",
+    }}
+  >
+    <div
+      style={{
+        background: "#f1f5f9",
+        padding: "6px 12px",
+        borderRadius: 999,
+        fontSize: 13,
+      }}
+    >
+      📅 Deadline: {a.deadline || "Geen"}
+    </div>
+
+    <div
+      style={{
+        background: "#dcfce7",
+        color: "#166534",
+        padding: "6px 12px",
+        borderRadius: 999,
+        fontSize: 13,
+        fontWeight: "bold",
+      }}
+    >
+      Open
+    </div>
+  </div>
+</div>
           </h3>
 
           <div
