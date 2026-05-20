@@ -273,7 +273,7 @@ async function addAssignment() {
   setAssignmentDescription("");
 setAssignmentDeadline("");
   setSelectedStudent("");
-
+loadSubmissions();
   loadAssignments(user.id, role);
 }
   
@@ -348,7 +348,7 @@ loadMessages();
       },
     ]);
 
-  if (error) {
+   if (error) {
     alert(error.message);
     return;
   }
@@ -356,23 +356,13 @@ loadMessages();
   setStudentName("");
   setSubject("");
   setScore("");
-
+   
   loadGrades();
 
   alert("Punt toegevoegd!");
 }
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  setStudentName("");
-  setSubject("");
-  setScore("");
-
-  loadGrades();
-}
+ 
   
 async function logout() {
 await supabase.auth.signOut();
@@ -880,6 +870,7 @@ Inbox
     style={{
       marginBottom: 10,
       color: "#0f172a",
+      fontSize: 22,
     }}
   >
     {a.title}
@@ -889,16 +880,7 @@ Inbox
     style={{
       color: "#475569",
       lineHeight: 1.6,
-    }}
-  >
-    {a.description}
-  </p>
-  
-
-  <p
-    style={{
-      color: "#475569",
-      lineHeight: 1.6,
+      marginBottom: 14,
     }}
   >
     {a.description}
@@ -937,7 +919,7 @@ Inbox
     </div>
   </div>
 </div>
-          </h3>
+        
 
           <div
             style={{
