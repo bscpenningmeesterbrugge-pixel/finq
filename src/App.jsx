@@ -712,7 +712,6 @@ Grades
 )}
 
 {activePage === "assignments" && (
-
   <div
     style={{
       background: "white",
@@ -720,176 +719,213 @@ Grades
       padding: 24,
     }}
   >
-    <h2 style={{ marginBottom: 20 }}>
-      Recent Assignments
+    <h2 style={{ marginBottom: 24 }}>
+      Assignments
     </h2>
-   
-{role === "teacher" && (
-  <div style={{ marginTop: 40 }}>
-    <h2>Ingediende assignments</h2>
 
-    {submissions.map((s) => (
+    {/* TEACHER CREATE */}
+    {role === "teacher" && (
       <div
-        key={s.id}
         style={{
-          padding: 18,
-          borderRadius: 14,
           background: "#f8fafc",
-          marginTop: 12,
-          border: "1px solid #ddd",
+          padding: 20,
+          borderRadius: 18,
+          marginBottom: 30,
+          border: "1px solid #e2e8f0",
         }}
       >
-        <p>
-          <strong>Student ID:</strong>{" "}
-          {s.student_id}
-        </p>
+        <h3>Nieuwe assignment</h3>
 
-        <p>
-          <strong>Antwoord:</strong>
-        </p>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            marginTop: 14,
+          }}
+        >
+          <input
+            value={newAssignment}
+            onChange={(e) =>
+              setNewAssignment(e.target.value)
+            }
+            placeholder="Titel van assignment"
+            style={{
+              padding: 14,
+              borderRadius: 12,
+              border: "1px solid #ddd",
+            }}
+          />
 
-        <p>{s.content}</p>
+          <select
+            value={selectedStudent}
+            onChange={(e) =>
+              setSelectedStudent(e.target.value)
+            }
+            style={{
+              padding: 14,
+              borderRadius: 12,
+              border: "1px solid #ddd",
+            }}
+          >
+            <option value="">
+              Kies student
+            </option>
+
+            {students.map((s) => (
+              <option
+                key={s.id}
+                value={s.id}
+              >
+                {s.email}
+              </option>
+            ))}
+          </select>
+
+          <button
+            onClick={addAssignment}
+            style={{
+              background: "#2563eb",
+              color: "white",
+              border: "none",
+              padding: "14px 18px",
+              borderRadius: 12,
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
+          >
+            Assignment maken
+          </button>
+        </div>
+      </div>
+    )}
+
+    {/* ASSIGNMENTS */}
+    {assignments.map((a) => (
+      <div
+        key={a.id}
+        style={{
+          background: "white",
+          borderRadius: 20,
+          padding: 24,
+          marginBottom: 20,
+          border: "1px solid #e2e8f0",
+          boxShadow:
+            "0 2px 10px rgba(0,0,0,0.05)",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 14,
+          }}
+        >
+          <h3
+            style={{
+              margin: 0,
+              color: "#0f172a",
+            }}
+          >
+            {a.title}
+          </h3>
+
+          <div
+            style={{
+              background: "#dbeafe",
+              color: "#1d4ed8",
+              padding: "6px 12px",
+              borderRadius: 999,
+              fontSize: 14,
+              fontWeight: "bold",
+            }}
+          >
+            Open
+          </div>
+        </div>
+
+        {role === "student" && (
+          <div
+            style={{
+              marginTop: 20,
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+            }}
+          >
+            <textarea
+              placeholder="Typ je antwoord..."
+              value={
+                submissionTexts[a.id] || ""
+              }
+              onChange={(e) =>
+                setSubmissionTexts({
+                  ...submissionTexts,
+                  [a.id]: e.target.value,
+                })
+              }
+              rows={5}
+              style={{
+                padding: 14,
+                borderRadius: 12,
+                border: "1px solid #ddd",
+              }}
+            />
+
+            <button
+              onClick={() =>
+                submitAssignment(a.id)
+              }
+              style={{
+                background: "#2563eb",
+                color: "white",
+                border: "none",
+                padding: "12px 18px",
+                borderRadius: 12,
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              Assignment indienen
+            </button>
+          </div>
+        )}
       </div>
     ))}
-  </div>
-)}
 
-{role === "teacher" && (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: 10,
-      marginBottom: 20,
-    }}
-  >
-    <input
-      value={newAssignment}
-      onChange={(e) =>
-        setNewAssignment(e.target.value)
-      }
-      placeholder="Nieuwe opdracht..."
-      style={{
-        padding: 12,
-        borderRadius: 10,
-        border: "1px solid #ddd",
-      }}
-    />
+    {/* SUBMISSIONS */}
+    {role === "teacher" && (
+      <div style={{ marginTop: 40 }}>
+        <h2>Ingediende assignments</h2>
 
-    <select
-      value={selectedStudent}
-      onChange={(e) =>
-        setSelectedStudent(e.target.value)
-      }
-      style={{
-        padding: 12,
-        borderRadius: 10,
-        border: "1px solid #ddd",
-      }}
-    >
-      <option value="">
-        Kies student
-      </option>
+        {submissions.map((s) => (
+          <div
+            key={s.id}
+            style={{
+              background: "#f8fafc",
+              padding: 20,
+              borderRadius: 18,
+              marginTop: 16,
+              border: "1px solid #e2e8f0",
+            }}
+          >
+            <p>
+              <strong>Student:</strong>{" "}
+              {s.student_id}
+            </p>
 
-      {students.map((s) => (
-        <option
-          key={s.id}
-          value={s.id}
-        >
-          {s.email}
-        </option>
-      ))}
-    </select>
+            <p>
+              <strong>Antwoord:</strong>
+            </p>
 
-    <button
-      onClick={addAssignment}
-      style={{
-        background: "#2563eb",
-        color: "white",
-        border: "none",
-        padding: "12px 18px",
-        borderRadius: 10,
-        cursor: "pointer",
-      }}
-    >
-      Assignment toewijzen
-    </button>
-  </div>
-)}
-
-{assignments.map((a) => (
-  <div
-  key={a.id}
-  style={{
-    padding: 22,
-    borderRadius: 18,
-    background: "white",
-    marginBottom: 18,
-    border: "1px solid #e2e8f0",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-  }}
->
-   <h3
-  style={{
-    margin: 0,
-    color: "#0f172a",
-  }}
->
-  {a.title}
-</h3>
-
-    {role === "student" && (
-      <div
-        style={{
-          marginTop: 14,
-          display: "flex",
-          flexDirection: "column",
-          gap: 10,
-        }}
-      >
-        <textarea
-  placeholder="Typ je antwoord..."
-  value={
-    submissionTexts[a.id] || ""
-  }
-  onChange={(e) =>
-    setSubmissionTexts({
-      ...submissionTexts,
-      [a.id]: e.target.value,
-    })
-  }
-          rows={4}
-          style={{
-            padding: 12,
-            borderRadius: 10,
-            border: "1px solid #ddd",
-          }}
-        />
-
-        <button
-          onClick={() =>
-            submitAssignment(a.id)
-          }
-          style={{
-           background: "#2563eb",
-            color: "white",
-            border: "none",
-            padding: "10px 16px",
-            borderRadius: 10,
-            cursor: "pointer",
-          }}
-        >
-          Assignment indienen
-        </button>
+            <p>{s.content}</p>
+          </div>
+        ))}
       </div>
     )}
   </div>
-))}
-  
-
-  </div>
 )}
-
 {activePage === "inbox" && (
 
   <div
