@@ -64,7 +64,6 @@ const [subject, setSubject] = useState("");
 const [score, setScore] = useState("");
 const [newMessageTitle, setNewMessageTitle] = useState("");
 const [newMessageContent, setNewMessageContent] = useState("");
- const [submissionTexts, setSubmissionTexts] = useState({})
 const [submissions, setSubmissions] = useState([]);
     const [reviewData, setReviewData] = useState({});
   const [submissions, setSubmissions] = useState([]);
@@ -75,7 +74,10 @@ const [submissions, setSubmissions] = useState([]);
         (s) => s.student_id === user?.id
       );
 
-
+const submittedAssignmentIds =
+  submissions.map(
+    (s) => s.assignment_id
+  );
 
 useEffect(() => {
   checkUser();
@@ -925,20 +927,20 @@ Inbox
 
     {/* ASSIGNMENTS */}
     {assignments
-  .filter((a) => a.status !.filter((a) => {
-  if (role === "teacher") {
-    return a.status !== "ingediend";
-  }
+  .filter((a) => {
+    if (role === "teacher") {
+      return a.status !== "ingediend";
+    }
 
-  return !submittedAssignmentIds.includes(a.id);
-})
+    return a.status !== "ingediend";
+  })
   .sort(
     (a, b) =>
       new Date(b.created_at) -
       new Date(a.created_at)
   )
   .map((a) => (
-      <div
+    <div
         key={a.id}
         style={{
           background: "white",
@@ -1128,21 +1130,22 @@ Inbox
   {s.profiles?.email}
 </p>
 
-            <p>
-              <strong>Antwoord:</strong>
-              <div
-  style={{
-    marginTop: 10,
-    background: "white",
-    padding: 14,
-    borderRadius: 12,
-    border: "1px solid #e2e8f0",
-    lineHeight: 1.6,
-  }}
->
-  {s.content}
+           <div>
+  <strong>Antwoord:</strong>
+
+  <div
+    style={{
+      marginTop: 10,
+      background: "white",
+      padding: 14,
+      borderRadius: 12,
+      border: "1px solid #e2e8f0",
+      lineHeight: 1.6,
+    }}
+  >
+    {s.content}
+  </div>
 </div>
-            </p>
 
             
           </div>
