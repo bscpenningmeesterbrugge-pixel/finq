@@ -1322,10 +1322,10 @@ Inbox
           border: "1px solid #ddd",
         }}
       >
-        <p>
-          <strong>Student:</strong>{" "}
-          {s.student_id}
-        </p>
+       <p>
+  <strong>Student:</strong>{" "}
+  {s.profiles?.email}
+</p>
 
         <p>
           <strong>Assignment:</strong>{" "}
