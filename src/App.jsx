@@ -985,34 +985,54 @@ Inbox
       📅 Deadline: {a.deadline || "Geen"}
     </div>
 
-    <div
-      style={{
-        background: "#dcfce7",
-        color: "#166534",
-        padding: "6px 12px",
-        borderRadius: 999,
-        fontSize: 13,
-        fontWeight: "bold",
-      }}
-    >
-      Open
-    </div>
+  <div
+  style={{
+    background:
+      a.status === "ingediend"
+        ? "#dcfce7"
+        : "#dbeafe",
+
+    color:
+      a.status === "ingediend"
+        ? "#166534"
+        : "#1d4ed8",
+
+    padding: "6px 12px",
+    borderRadius: 999,
+    fontSize: 13,
+    fontWeight: "bold",
+  }}
+>
+  {a.status === "ingediend"
+    ? "✅ Ingediend"
+    : "📘 Open"}
+</div>
   </div>
 </div>
         
 
-          <div
-            style={{
-              background: "#dbeafe",
-              color: "#1d4ed8",
-              padding: "6px 12px",
-              borderRadius: 999,
-              fontSize: 14,
-              fontWeight: "bold",
-            }}
-          >
-            Open
-          </div>
+        <div
+  style={{
+    background:
+      a.status === "ingediend"
+        ? "#dcfce7"
+        : "#dbeafe",
+
+    color:
+      a.status === "ingediend"
+        ? "#166534"
+        : "#1d4ed8",
+
+    padding: "6px 12px",
+    borderRadius: 999,
+    fontSize: 14,
+    fontWeight: "bold",
+  }}
+>
+  {a.status === "ingediend"
+    ? "✅ Ingediend"
+    : "📘 Open"}
+</div>
         </div>
 
         {role === "student" && (
