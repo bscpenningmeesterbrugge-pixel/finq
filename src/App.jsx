@@ -747,33 +747,38 @@ Inbox
     marginBottom: 30,
   }}
 >
-  <div style={cardStyle}>
-    <h3>Open Assignments</h3>
+ <div style={cardStyle}>
+  <h3>Open opdrachten</h3>
 
-    <p style={bigNumber}>
-      {
-        assignments.filter(
-          (a) => a.status !== "ingediend"
-        ).length
-      }
-    </p>
-  </div>
+  <p style={bigNumber}>
+    {
+      assignments.filter(
+        (a) => a.status !== "ingediend"
+      ).length
+    }
+  </p>
+</div>
 
-  <div style={cardStyle}>
-    <h3>Messages</h3>
+<div style={cardStyle}>
+  <h3>Ingediend</h3>
 
-    <p style={bigNumber}>
-      {messages.length}
-    </p>
-  </div>
+  <p style={bigNumber}>
+    {
+      assignments.filter(
+        (a) => a.status === "ingediend"
+      ).length
+    }
+  </p>
+</div>
 
-  <div style={cardStyle}>
-    <h3>Notifications</h3>
+<div style={cardStyle}>
+  <h3>Totaal opdrachten</h3>
 
-    <p style={bigNumber}>
-      {assignments.length + messages.length}
-    </p>
-  </div>
+  <p style={bigNumber}>
+    {assignments.length}
+  </p>
+</div>
+  
 </div>    {/* ASSIGNMENTS */}
     {activePage === "dashboard" && (
 
