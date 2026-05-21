@@ -66,9 +66,7 @@ const [newMessageTitle, setNewMessageTitle] = useState("");
 const [newMessageContent, setNewMessageContent] = useState("");
  const [submissionTexts, setSubmissionTexts] = useState({})
 const [submissions, setSubmissions] = useState([]);
-  const [feedback, setFeedback] = useState("");
-const [submissionGrade, setSubmissionGrade] = useState("");
-  const [reviewData, setReviewData] = useState({});
+    const [reviewData, setReviewData] = useState({});
 
 
 
