@@ -701,44 +701,44 @@ Inbox
 
   {/* CONTENT */}
   <div style={{ padding: 30 }}>
-    {/* STATS */}
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-        gap: 20,
-        marginBottom: 30,
-      }}
-    >
-     <div style={cardStyle}>
-  <h3>Open Assignments</h3>
+   {/* STATS */}
+<div
+  style={{
+    display: "grid",
+    gridTemplateColumns:
+      "repeat(auto-fit,minmax(220px,1fr))",
+    gap: 20,
+    marginBottom: 30,
+  }}
+>
+  <div style={cardStyle}>
+    <h3>Open Assignments</h3>
 
-  <p style={bigNumber}>
-    {
-      assignments.filter(
-        (a) => a.status !== "ingediend"
-      ).length
-    }
-  </p>
-</div>
-      </div>
+    <p style={bigNumber}>
+      {
+        assignments.filter(
+          (a) => a.status !== "ingediend"
+        ).length
+      }
+    </p>
+  </div>
 
-      <div style={cardStyle}>
-        <h3>Messages</h3>
-       <p style={bigNumber}>
-  {messages.length}
-</p>
-      </div>
+  <div style={cardStyle}>
+    <h3>Messages</h3>
 
-      <div style={cardStyle}>
-        <h3>Notifications</h3>
-       <p style={bigNumber}>
-  {assignments.length + messages.length}
-</p>
-      </div>
-    </div>
+    <p style={bigNumber}>
+      {messages.length}
+    </p>
+  </div>
 
-    {/* ASSIGNMENTS */}
+  <div style={cardStyle}>
+    <h3>Notifications</h3>
+
+    <p style={bigNumber}>
+      {assignments.length + messages.length}
+    </p>
+  </div>
+</div>    {/* ASSIGNMENTS */}
     {activePage === "dashboard" && (
 
   <div
@@ -1120,6 +1120,7 @@ Inbox
     Bericht posten
   </button>
 )}
+
   {activePage === "archive" && (
   <div
     style={{
@@ -1135,6 +1136,11 @@ Inbox
     {assignments
       .filter(
         (a) => a.status === "ingediend"
+      )
+      .sort(
+        (a, b) =>
+          new Date(b.created_at) -
+          new Date(a.created_at)
       )
       .map((a) => (
         <div
@@ -1168,30 +1174,7 @@ Inbox
       ))}
   </div>
 )}
-    
-</div>
-
-    )}
-    
-{messages.map((m) => (
-  <div
-    key={m.id}
-    style={{
-      padding: 18,
-      borderRadius: 14,
-      background: "#f8fafc",
-      marginBottom: 14,
-      border: "1px solid #ddd",
-    }}
-  >
-    <h3>{m.title}</h3>
-
-    <p>{m.content}</p>
-  </div>
-))}
-
-  </div>
-)}
+  
     {activePage === "grades" && (
 
   <div
