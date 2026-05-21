@@ -42,6 +42,7 @@ export default function App() {
   console.log(import.meta.env.VITE_SUPABASE_URL)
 console.log(import.meta.env.VITE_SUPABASE_ANON_KEY)
 
+  const [loading, setLoading] = useState(false);
 const [user, setUser] = useState(null);
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
@@ -67,11 +68,31 @@ const [newMessageContent, setNewMessageContent] = useState("");
 const [submissions, setSubmissions] = useState([]);
   const [feedback, setFeedback] = useState("");
 const [submissionGrade, setSubmissionGrade] = useState("");
+  const [reviewData, setReviewData] = useState({});
 
 
 
 useEffect(() => {
   checkUser();
+
+  const channel = supabase
+    .channel("messages-live")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "messages",
+      },
+      () => {
+        loadMessages();
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
 }, []);
 
 async function checkUser() {
@@ -147,11 +168,14 @@ async function loadSubmissions() {
   const { data, error } = await supabase
     .from("submissions")
     .select(`
-      *,
-      profiles:student_id (
-        email
-      )
-    `)
+  *,
+  profiles:student_id (
+    email
+  ),
+  assignments:assignment_id (
+    title
+  )
+`)
     .order("created_at", {
       ascending: false,
     });
@@ -208,11 +232,15 @@ setMessages(data || []);
 
 
 async function login() {
+  setLoading(true);
+
   const { data, error } =
     await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
+  setLoading(false);
 
   if (error) {
     alert(error.message);
@@ -223,7 +251,6 @@ async function login() {
     checkUser();
   }
 }
-
   async function signup() {
   const { data, error } = await supabase.auth.signUp({
   email,
@@ -282,7 +309,6 @@ async function addAssignment() {
   setAssignmentDescription("");
 setAssignmentDeadline("");
   setSelectedStudent("");
-loadSubmissions();
   loadAssignments(user.id, role);
 }
   
@@ -535,7 +561,7 @@ width: 320,
           borderRadius: 8,
         }}
       >
-        Login
+        {loading ? "Bezig..." : "Login"}
       </button>
 
   <button
@@ -1329,7 +1355,7 @@ Inbox
 
         <p>
           <strong>Assignment:</strong>{" "}
-          {s.assignment_id}
+         {s.assignments?.title}
         </p>
 
         <p>
