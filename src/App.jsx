@@ -64,9 +64,9 @@ const [subject, setSubject] = useState("");
 const [score, setScore] = useState("");
 const [newMessageTitle, setNewMessageTitle] = useState("");
 const [newMessageContent, setNewMessageContent] = useState("");
-const [submissions, setSubmissions] = useState([]);
-    const [reviewData, setReviewData] = useState({});
+  
   const [submissions, setSubmissions] = useState([]);
+    const [reviewData, setReviewData] = useState({});
   const filteredSubmissions =
   role === "teacher"
     ? submissions
