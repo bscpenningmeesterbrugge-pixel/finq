@@ -67,6 +67,13 @@ const [newMessageContent, setNewMessageContent] = useState("");
  const [submissionTexts, setSubmissionTexts] = useState({})
 const [submissions, setSubmissions] = useState([]);
     const [reviewData, setReviewData] = useState({});
+  const [submissions, setSubmissions] = useState([]);
+  const filteredSubmissions =
+  role === "teacher"
+    ? submissions
+    : submissions.filter(
+        (s) => s.student_id === user?.id
+      );
 
 
 
@@ -918,7 +925,13 @@ Inbox
 
     {/* ASSIGNMENTS */}
     {assignments
-  .filter((a) => a.status !== "ingediend")
+  .filter((a) => a.status !.filter((a) => {
+  if (role === "teacher") {
+    return a.status !== "ingediend";
+  }
+
+  return !submittedAssignmentIds.includes(a.id);
+})
   .sort(
     (a, b) =>
       new Date(b.created_at) -
@@ -982,7 +995,17 @@ Inbox
         fontSize: 13,
       }}
     >
-      📅 Deadline: {a.deadline || "Geen"}
+     <span
+  style={{
+    color:
+      new Date(a.deadline) < new Date()
+        ? "red"
+        : "#475569",
+    fontWeight: "bold",
+  }}
+>
+  📅 Deadline: {a.deadline || "Geen"}
+</span>
     </div>
 
   <div
@@ -1089,7 +1112,7 @@ Inbox
       <div style={{ marginTop: 40 }}>
         <h2>Ingediende assignments</h2>
 
-        {submissions.map((s) => (
+       {filteredSubmissions.map((s) => (
           <div
             key={s.id}
             style={{
@@ -1107,9 +1130,21 @@ Inbox
 
             <p>
               <strong>Antwoord:</strong>
+              <div
+  style={{
+    marginTop: 10,
+    background: "white",
+    padding: 14,
+    borderRadius: 12,
+    border: "1px solid #e2e8f0",
+    lineHeight: 1.6,
+  }}
+>
+  {s.content}
+</div>
             </p>
 
-            <p>{s.content}</p>
+            
           </div>
         ))}
       </div>
@@ -1363,7 +1398,7 @@ Inbox
       Ingediende opdrachten
     </h2>
 
-    {submissions.map((s) => (
+    {filteredSubmissions.map((s) => (
       <div
         key={s.id}
         style={{
@@ -1466,7 +1501,7 @@ Inbox
           </div>
         )}
 
-        {s.grade && (
+        {s.grade !== null && (
           <div
             style={{
               marginTop: 14,
