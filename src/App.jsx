@@ -1464,8 +1464,8 @@ Inbox
   </div>
 )}
   
-</main>
-
+    </div>
+  </main>
 </div>
 );
 }
