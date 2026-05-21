@@ -146,7 +146,12 @@ async function loadAssignments(
 async function loadSubmissions() {
   const { data } = await supabase
     .from("submissions")
-    .select("*")
+   .select(`
+  *,
+  profiles (
+    email
+  )
+`)
     .order("created_at", {
       ascending: false,
     });
