@@ -187,14 +187,20 @@ async function loadSubmissions() {
 
   setSubmissions(data || []);
 }
-async function reviewSubmission(
+
+  async function reviewSubmission(
   submissionId
 ) {
+  const currentReview =
+    reviewData[submissionId];
+
+  if (!currentReview) return;
+
   const { error } = await supabase
     .from("submissions")
     .update({
-      grade: submissionGrade,
-      feedback: feedback,
+      grade: currentReview.grade,
+      feedback: currentReview.feedback,
     })
     .eq("id", submissionId);
 
@@ -202,9 +208,6 @@ async function reviewSubmission(
     alert(error.message);
     return;
   }
-
-  setSubmissionGrade("");
-  setFeedback("");
 
   loadSubmissions();
 
@@ -1382,51 +1385,61 @@ Inbox
               gap: 10,
             }}
           >
-            <input
-              placeholder="Score /20"
-              type="number"
-              value={submissionGrade}
-              onChange={(e) =>
-                setSubmissionGrade(
-                  e.target.value
-                )
-              }
-              style={{
-                padding: 12,
-                borderRadius: 10,
-                border: "1px solid #ddd",
-              }}
-            />
+           <input
+  placeholder="Score /20"
+  type="number"
+  value={reviewData[s.id]?.grade || ""}
+  onChange={(e) =>
+    setReviewData({
+      ...reviewData,
+      [s.id]: {
+        ...reviewData[s.id],
+        grade: e.target.value,
+      },
+    })
+  }
+  style={{
+    padding: 12,
+    borderRadius: 10,
+    border: "1px solid #ddd",
+  }}
+/>
 
-            <textarea
-              placeholder="Feedback..."
-              value={feedback}
-              onChange={(e) =>
-                setFeedback(e.target.value)
-              }
-              rows={3}
-              style={{
-                padding: 12,
-                borderRadius: 10,
-                border: "1px solid #ddd",
-              }}
-            />
+<textarea
+  placeholder="Feedback..."
+  value={reviewData[s.id]?.feedback || ""}
+  onChange={(e) =>
+    setReviewData({
+      ...reviewData,
+      [s.id]: {
+        ...reviewData[s.id],
+        feedback: e.target.value,
+      },
+    })
+  }
+  rows={3}
+  style={{
+    padding: 12,
+    borderRadius: 10,
+    border: "1px solid #ddd",
+  }}
+/>
 
-            <button
-              onClick={() =>
-                reviewSubmission(s.id)
-              }
-              style={{
-               background: "#2563eb",
-                color: "white",
-                border: "none",
-                padding: "10px 16px",
-                borderRadius: 10,
-                cursor: "pointer",
-              }}
-            >
-              Verbeteren
-            </button>
+<button
+  onClick={() =>
+    reviewSubmission(s.id)
+  }
+  style={{
+    background: "#2563eb",
+    color: "white",
+    border: "none",
+    padding: "10px 16px",
+    borderRadius: 10,
+    cursor: "pointer",
+  }}
+>
+  Verbeteren
+</button>
           </div>
         )}
 
