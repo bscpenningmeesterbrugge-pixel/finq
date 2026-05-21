@@ -1055,8 +1055,8 @@ Inbox
     )}
   </div>
 )}
-{activePage === "inbox" && (
 
+{activePage === "inbox" && (
   <div
     style={{
       background: "white",
@@ -1069,59 +1069,76 @@ Inbox
     </h2>
 
     {role === "teacher" && (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+          marginBottom: 20,
+        }}
+      >
+        <input
+          value={newMessageTitle}
+          onChange={(e) =>
+            setNewMessageTitle(e.target.value)
+          }
+          placeholder="Titel"
+          style={{
+            padding: 12,
+            borderRadius: 10,
+            border: "1px solid #ddd",
+          }}
+        />
 
-<div
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    gap: 10,
-    marginBottom: 20,
-  }}
->
-  <input
-    value={newMessageTitle}
-    onChange={(e) =>
-      setNewMessageTitle(e.target.value)
-    }
-    placeholder="Titel"
-    style={{
-      padding: 12,
-      borderRadius: 10,
-      border: "1px solid #ddd",
-    }}
-  />
+        <textarea
+          value={newMessageContent}
+          onChange={(e) =>
+            setNewMessageContent(e.target.value)
+          }
+          placeholder="Bericht..."
+          rows={4}
+          style={{
+            padding: 12,
+            borderRadius: 10,
+            border: "1px solid #ddd",
+          }}
+        />
 
-  <textarea
-    value={newMessageContent}
-    onChange={(e) =>
-      setNewMessageContent(e.target.value)
-    }
-    placeholder="Bericht..."
-    rows={4}
-    style={{
-      padding: 12,
-      borderRadius: 10,
-      border: "1px solid #ddd",
-    }}
-  />
+        <button
+          onClick={addMessage}
+          style={{
+            background: "#2563eb",
+            color: "white",
+            border: "none",
+            padding: "12px 18px",
+            borderRadius: 10,
+            cursor: "pointer",
+          }}
+        >
+          Bericht posten
+        </button>
+      </div>
+    )}
 
-  {role === "teacher" && (
-  <button
-    onClick={addMessage}
-    style={{
-     background: "#2563eb",
-      color: "white",
-      border: "none",
-      padding: "12px 18px",
-      borderRadius: 10,
-      cursor: "pointer",
-    }}
-  >
-    Bericht posten
-  </button>
+    {messages.map((m) => (
+      <div
+        key={m.id}
+        style={{
+          padding: 18,
+          borderRadius: 14,
+          background: "#f8fafc",
+          marginBottom: 14,
+          border: "1px solid #ddd",
+        }}
+      >
+        <h3>{m.title}</h3>
+        <p>{m.content}</p>
+      </div>
+    ))}
+  </div>
 )}
 
-  {activePage === "archive" && (
+{activePage === "archive" && (
   <div
     style={{
       background: "white",
@@ -1174,9 +1191,8 @@ Inbox
       ))}
   </div>
 )}
-  
-    {activePage === "grades" && (
 
+{activePage === "grades" && (
   <div
     style={{
       background: "white",
@@ -1189,69 +1205,70 @@ Inbox
     </h2>
 
     {role === "teacher" && (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: 10,
-      marginBottom: 24,
-    }}
-  >
-      <input
-        placeholder="Student"
-        value={studentName}
-        onChange={(e) =>
-          setStudentName(e.target.value)
-        }
+      <div
         style={{
-          padding: 12,
-          borderRadius: 10,
-          border: "1px solid #ddd",
-        }}
-      />
-
-      <input
-        placeholder="Vak"
-        value={subject}
-        onChange={(e) =>
-          setSubject(e.target.value)
-        }
-        style={{
-          padding: 12,
-          borderRadius: 10,
-          border: "1px solid #ddd",
-        }}
-      />
-
-      <input
-        placeholder="Score"
-        type="number"
-        value={score}
-        onChange={(e) =>
-          setScore(e.target.value)
-        }
-        style={{
-          padding: 12,
-          borderRadius: 10,
-          border: "1px solid #ddd",
-        }}
-      />
-
-      <button
-        onClick={addGrade}
-        style={{
-          background: "#2563eb",
-          color: "white",
-          border: "none",
-          padding: "12px 18px",
-          borderRadius: 10,
-          cursor: "pointer",
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+          marginBottom: 24,
         }}
       >
-        Punt toevoegen
-      </button>
-    </div>
-)}
+        <input
+          placeholder="Student"
+          value={studentName}
+          onChange={(e) =>
+            setStudentName(e.target.value)
+          }
+          style={{
+            padding: 12,
+            borderRadius: 10,
+            border: "1px solid #ddd",
+          }}
+        />
+
+        <input
+          placeholder="Vak"
+          value={subject}
+          onChange={(e) =>
+            setSubject(e.target.value)
+          }
+          style={{
+            padding: 12,
+            borderRadius: 10,
+            border: "1px solid #ddd",
+          }}
+        />
+
+        <input
+          placeholder="Score"
+          type="number"
+          value={score}
+          onChange={(e) =>
+            setScore(e.target.value)
+          }
+          style={{
+            padding: 12,
+            borderRadius: 10,
+            border: "1px solid #ddd",
+          }}
+        />
+
+        <button
+          onClick={addGrade}
+          style={{
+            background: "#2563eb",
+            color: "white",
+            border: "none",
+            padding: "12px 18px",
+            borderRadius: 10,
+            cursor: "pointer",
+          }}
+        >
+          Punt toevoegen
+        </button>
+      </div>
+    )}
+
     {grades.map((g) => (
       <div
         key={g.id}
@@ -1272,9 +1289,7 @@ Inbox
     ))}
   </div>
 )}
-
-  </div>
-
+    
 {activePage === "submissions" && (
   <div
     style={{
