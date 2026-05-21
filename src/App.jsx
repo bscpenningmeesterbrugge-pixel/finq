@@ -144,21 +144,25 @@ async function loadAssignments(
 }
 
 async function loadSubmissions() {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("submissions")
-   .select(`
-  *,
-  profiles (
-    email
-  )
-`)
+    .select(`
+      *,
+      profiles:student_id (
+        email
+      )
+    `)
     .order("created_at", {
       ascending: false,
     });
 
+  if (error) {
+    console.log(error);
+    return;
+  }
+
   setSubmissions(data || []);
 }
-
 async function reviewSubmission(
   submissionId
 ) {
@@ -1044,10 +1048,10 @@ Inbox
               border: "1px solid #e2e8f0",
             }}
           >
-            <p>
-              <strong>Student:</strong>{" "}
-              {s.student_id}
-            </p>
+           <p>
+  <strong>Student:</strong>{" "}
+  {s.profiles?.email}
+</p>
 
             <p>
               <strong>Antwoord:</strong>
