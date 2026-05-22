@@ -75,9 +75,13 @@ const [newMessageContent, setNewMessageContent] = useState("");
       );
 
 const submittedAssignmentIds =
-  submissions.map(
-    (s) => s.assignment_id
-  );
+  submissions
+    .filter(
+      (s) => s.student_id === user?.id
+    )
+    .map(
+      (s) => s.assignment_id
+    );
   const filteredSubmissions =
   role === "teacher"
     ? submissions
