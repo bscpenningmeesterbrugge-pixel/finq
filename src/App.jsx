@@ -82,12 +82,7 @@ const submittedAssignmentIds =
     .map(
       (s) => s.assignment_id
     );
-  const filteredSubmissions =
-  role === "teacher"
-    ? submissions
-    : submissions.filter(
-        (s) => s.student_id === user?.id
-      );
+  
 
 useEffect(() => {
   checkUser();
