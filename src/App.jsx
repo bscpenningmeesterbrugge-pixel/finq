@@ -933,11 +933,13 @@ Inbox
     {/* ASSIGNMENTS */}
     {assignments
   .filter((a) => {
+    // teacher ziet alles
     if (role === "teacher") {
       return true;
     }
 
-    return !submittedAssignmentIds.includes(a.id);
+    // student ziet enkel open opdrachten
+    return a.status !== "ingediend";
   })
   .sort(
     (a, b) =>
