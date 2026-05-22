@@ -929,10 +929,10 @@ Inbox
     {assignments
   .filter((a) => {
     if (role === "teacher") {
-      return a.status !== "ingediend";
+      return true;
     }
 
-    return a.status !== "ingediend";
+    return !submittedAssignmentIds.includes(a.id);
   })
   .sort(
     (a, b) =>
