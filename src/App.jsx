@@ -64,7 +64,7 @@ const [subject, setSubject] = useState("");
 const [score, setScore] = useState("");
 const [newMessageTitle, setNewMessageTitle] = useState("");
 const [newMessageContent, setNewMessageContent] = useState("");
-  
+  const [submissionTexts, setSubmissionTexts] = useState({});
   const [submissions, setSubmissions] = useState([]);
     const [reviewData, setReviewData] = useState({});
   const filteredSubmissions =
