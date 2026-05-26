@@ -325,6 +325,8 @@ async function addAssignment() {
     const aiData =
       await aiResponse.json();
 
+    console.log(aiData);
+
     // assignment opslaan
     const { error } = await supabase
       .from("assignments")
