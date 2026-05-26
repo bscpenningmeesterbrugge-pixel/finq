@@ -302,29 +302,69 @@ if (data.user) {
 }
 
 async function addAssignment() {
-  if (!newAssignment || !selectedStudent) return;
-
-  const { error } = await supabase
-    .from("assignments")
-    .insert([
-  {
-    title: newAssignment,
-    description: assignmentDescription,
-    deadline: assignmentDeadline,
-    student_id: selectedStudent,
-  },
-]);
-
-  if (error) {
-    alert(error.message);
+  if (!newAssignment || !selectedStudent)
     return;
-  }
 
-  setNewAssignment("");
-  setAssignmentDescription("");
-setAssignmentDeadline("");
-  setSelectedStudent("");
-  loadAssignments(user.id, role);
+  try {
+    // AI oefeningen genereren
+    const aiResponse = await fetch(
+      "/api/generate-assignment",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          prompt:
+            assignmentDescription,
+        }),
+      }
+    );
+
+    const aiData =
+      await aiResponse.json();
+
+    // assignment opslaan
+    const { error } = await supabase
+      .from("assignments")
+      .insert([
+        {
+          title: newAssignment,
+          description:
+            assignmentDescription,
+          deadline:
+            assignmentDeadline,
+          student_id:
+            selectedStudent,
+
+          generated_questions:
+            aiData.result,
+        },
+      ]);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    setNewAssignment("");
+    setAssignmentDescription("");
+    setAssignmentDeadline("");
+    setSelectedStudent("");
+
+    loadAssignments(user.id, role);
+
+    alert(
+      "AI assignment gemaakt!"
+    );
+  } catch (err) {
+    console.log(err);
+
+    alert(
+      "AI generatie mislukt"
+    );
+  }
 }
   
 async function submitAssignment(
@@ -1067,51 +1107,92 @@ Inbox
 </div>
         </div>
 
-        {role === "student" && (
-          <div
-            style={{
-              marginTop: 20,
-              display: "flex",
-              flexDirection: "column",
-              gap: 12,
-            }}
-          >
-            <textarea
-              placeholder="Typ je antwoord..."
-              value={
-                submissionTexts[a.id] || ""
-              }
-              onChange={(e) =>
-                setSubmissionTexts({
-                  ...submissionTexts,
-                  [a.id]: e.target.value,
-                })
-              }
-              rows={5}
-              style={{
-                padding: 14,
-                borderRadius: 12,
-                border: "1px solid #ddd",
-              }}
-            />
+       <div
+  style={{
+    marginTop: 20,
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
+  }}
+>
+  {a.generated_questions?.map(
+    (q, index) => (
+      <div
+        key={index}
+        style={{
+          background: "#f8fafc",
+          padding: 16,
+          borderRadius: 14,
+        }}
+      >
+        <h4>
+          Vraag {index + 1}
+        </h4>
 
-            <button
-              onClick={() =>
-                submitAssignment(a.id)
-              }
-              style={{
-                background: "#2563eb",
-                color: "white",
-                border: "none",
-                padding: "12px 18px",
-                borderRadius: 12,
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              Assignment indienen
-            </button>
-          </div>
+        <p>{q.question}</p>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            marginTop: 10,
+          }}
+        >
+          {q.options.map(
+            (option, i) => (
+              <label key={i}>
+                <input
+                  type="radio"
+                  name={`question-${a.id}-${index}`}
+                />
+
+                {" "}
+                {option}
+              </label>
+            )
+          )}
+        </div>
+      </div>
+    )
+  )}
+
+  <textarea
+    placeholder="Extra uitleg of opmerkingen..."
+    value={
+      submissionTexts[a.id] || ""
+    }
+    onChange={(e) =>
+      setSubmissionTexts({
+        ...submissionTexts,
+        [a.id]: e.target.value,
+      })
+    }
+    rows={4}
+    style={{
+      padding: 14,
+      borderRadius: 12,
+      border: "1px solid #ddd",
+    }}
+  />
+
+  <button
+    onClick={() =>
+      submitAssignment(a.id)
+    }
+    style={{
+      background: "#2563eb",
+      color: "white",
+      border: "none",
+      padding: "12px 18px",
+      borderRadius: 12,
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    Assignment indienen
+  </button>
+</div>
         )}
       </div>
     ))}
