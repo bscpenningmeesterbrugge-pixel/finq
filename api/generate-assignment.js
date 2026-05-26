@@ -1,3 +1,7 @@
+export const config = {
+  runtime: "nodejs",
+};
+
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -47,7 +51,6 @@ FORMAT (STRICT JSON):
 
     let text = completion.choices[0].message.content;
 
-    // 🔥 BELANGRIJK: cleanup (AI geeft soms ```json)
     text = text.replace(/```json/g, "").replace(/```/g, "").trim();
 
     let json;
@@ -66,7 +69,7 @@ FORMAT (STRICT JSON):
       result: json,
     });
   } catch (err) {
-    console.error("AI ERROR:", err);
+    console.error(err);
 
     return res.status(500).json({
       error: err.message || "Unknown error",
