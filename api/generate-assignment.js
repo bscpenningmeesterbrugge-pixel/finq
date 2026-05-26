@@ -1,65 +1,78 @@
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 export default async function handler(
-req,
-res
+  req,
+  res
 ) {
-try {
-const response = await fetch(
-"https://api.openai.com/v1/chat/completions",
-{
-method: "POST",
-headers: {
-"Content-Type":
-"application/json",
-Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-},
-body: JSON.stringify({
-model: "gpt-4o-mini",
-messages: [
-{
-role: "system",
-content:
-"Je bent een leerkracht die oefeningen maakt.",
-},
-{
-role: "user",
-content: `
-Maak 5 multiple choice oefeningen in JSON formaat.
+  try {
+    if (req.method !== "POST") {
+      return res
+        .status(405)
+        .json({
+          error:
+            "Method not allowed",
+        });
+    }
 
-Onderwerp:
-${req.body.prompt}
+    const { prompt } = req.body;
 
-Geef enkel geldige JSON terug.
+    const response =
+      await openai.chat.completions.create({
+        model: "gpt-4o-mini",
 
-Voorbeeld:
+        messages: [
+          {
+            role: "system",
+            content:
+              `
+Maak multiple choice oefeningen.
+
+Geef ALTIJD geldige JSON terug.
+
+Formaat:
+
 [
-{
-"question":"Wat is 21% btw op 100 euro?",
-"options":["10","21","50"],
-"answer":"21"
-}
+  {
+    "question":"...",
+    "options":[
+      "...",
+      "...",
+      "...",
+      "..."
+    ],
+    "correctAnswer":0
+  }
 ]
 `,
-},
-],
-}),
-}
-);
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
 
-```
-const data =
-  await response.json();
+        temperature: 0.7,
+      });
 
-const result =
-  data.choices?.[0]?.message?.content;
+    const text =
+      response.choices[0]
+        .message.content;
 
-res.status(200).json({
-  result,
-});
-```
+    const parsed =
+      JSON.parse(text);
 
-} catch (err) {
-res.status(500).json({
-error: err.message,
-});
-}
+    res.status(200).json({
+      result: parsed,
+    });
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      error: err.message,
+    });
+  }
 }
