@@ -323,7 +323,17 @@ async function addAssignment() {
     );
 
     const aiData =
-      await aiResponse.json();
+await aiResponse.json();
+
+console.log("AI RESPONSE:", aiData);
+
+if (!aiResponse.ok) {
+alert(
+aiData.error ||
+"AI fout"
+);
+return;
+}
 
     console.log(aiData);
 
