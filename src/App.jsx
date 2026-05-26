@@ -339,7 +339,7 @@ async function addAssignment() {
             selectedStudent,
 
           generated_questions:
-            aiData.result,
+  JSON.parse(aiData.result),
         },
       ]);
 
