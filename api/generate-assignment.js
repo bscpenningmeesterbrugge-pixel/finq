@@ -1,73 +1,33 @@
-export default async function handler(
-req,
-res
-) {
-try {
-const response = await fetch(
-"https://api.openai.com/v1/chat/completions",
-{
-method: "POST",
-headers: {
-"Content-Type":
-"application/json",
-Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-},
-body: JSON.stringify({
-model: "gpt-4o-mini",
-messages: [
-{
-role: "system",
-content:
-"Je bent een leerkracht die oefeningen maakt in JSON formaat.",
-},
-{
-role: "user",
-content: `
-Maak 5 multiple choice oefeningen.
+export default async function handler(req, res) {
+  try {
+    console.log("METHOD:", req.method);
+    console.log("BODY:", req.body);
 
-Onderwerp:
-${req.body.prompt}
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Only POST allowed" });
+    }
 
-Geef ENKEL geldige JSON terug.
+    const { prompt } = req.body || {};
 
-Voorbeeld:
+    if (!prompt) {
+      return res.status(400).json({ error: "Missing prompt" });
+    }
 
-[
-{
-"question":"Wat is 21% van 100?",
-"options":["10","21","50"],
-"answer":"21"
-}
-]
-`,
-},
-],
-temperature: 0.7,
-}),
-}
-);
-
-
-const data = await response.json();
-
-console.log(data);
-
-const result =
-  data.choices?.[0]?.message?.content;
-
-res.status(200).json({
-  result,
-});
-
-
-} catch (err) {
-console.log(err);
-
-
-res.status(500).json({
-  error: err.message,
-});
-
-
-}
+    return res.status(200).json({
+      ok: true,
+      result: {
+        questions: [
+          {
+            question: "Wat is 2 + 2?",
+            options: ["3", "4", "5"],
+          },
+        ],
+      },
+    });
+  } catch (err) {
+    console.error("ERROR:", err);
+    return res.status(500).json({
+      error: err.message,
+    });
+  }
 }
