@@ -1,1 +1,1 @@
-console.log("Hallo wereld");
+import iets from "./test/iets.js";
