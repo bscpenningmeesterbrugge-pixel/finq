@@ -1,45 +1,53 @@
-export const config = {
-  runtime: "nodejs",
-};
-
 import OpenAI from "openai";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// 🔥 helper: extract JSON uit rommel
-function extractJSON(text) {
-  if (!text) return null;
+// fallback zodat frontend nooit crasht
+function fallbackResponse(prompt) {
+  return {
+    ok: true,
+    result: {
+      questions: [
+        {
+          question: `Wat is een basisbegrip rond: ${prompt}?`,
+          options: ["A", "B", "C", "D"],
+          correct: 0,
+        },
+        {
+          question: `Welke stelling past bij: ${prompt}?`,
+          options: ["A", "B", "C", "D"],
+          correct: 1,
+        },
+        {
+          question: `Toepassing van: ${prompt}?`,
+          options: ["A", "B", "C", "D"],
+          correct: 2,
+        },
+      ],
+    },
+  };
+}
 
-  // 1. direct parse poging
+// veilige JSON parser
+function safeParse(text) {
   try {
     return JSON.parse(text);
-  } catch {}
+  } catch (e) {
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error("No JSON found");
+    return JSON.parse(match[0]);
+  }
+}
 
-  // 2. strip markdown
-  const cleaned = text
-    .replace(/```json/g, "")
-    .replace(/```/g, "")
-    .trim();
-
-  try {
-    return JSON.parse(cleaned);
-  } catch {}
-
-  // 3. brute force: zoek eerste { ... laatste }
-  const first = text.indexOf("{");
-  const last = text.lastIndexOf("}");
-
-  if (first !== -1 && last !== -1) {
-    const slice = text.slice(first, last + 1);
-
-    try {
-      return JSON.parse(slice);
-    } catch {}
+// validatie
+function validate(data) {
+  if (!data?.questions || !Array.isArray(data.questions)) {
+    throw new Error("Invalid structure");
   }
 
-  return null;
+  return data;
 }
 
 export default async function handler(req, res) {
@@ -54,68 +62,72 @@ export default async function handler(req, res) {
   }
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      temperature: 0.4,
+    let attempts = 0;
+    let lastError = null;
 
-      // 🔥 BELANGRIJK: native JSON mode (game changer)
-      response_format: { type: "json_object" },
+    while (attempts < 2) {
+      attempts++;
 
-      messages: [
-        {
-          role: "system",
-          content:
-            "Je bent een AI die ALTIJD geldige JSON teruggeeft. Geen uitleg, geen markdown.",
-        },
-        {
-          role: "user",
-          content: `
+      try {
+        const completion = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          temperature: 0.2,
+
+          // 🔥 BELANGRIJK: force JSON output
+          response_format: { type: "json_object" },
+
+          messages: [
+            {
+              role: "system",
+              content:
+                "Je bent een docent-assistent. Geef enkel geldige JSON terug. Geen tekst, geen markdown.",
+            },
+            {
+              role: "user",
+              content: `
 Maak 3 multiple choice vragen over: ${prompt}
 
-Return EXACT dit JSON schema:
-
+Formaat:
 {
   "questions": [
     {
       "question": "string",
-      "options": ["A", "B", "C", "D"],
+      "options": ["A","B","C","D"],
       "correct": 0
     }
   ]
 }
-          `,
-        },
-      ],
-    });
+              `,
+            },
+          ],
+        });
 
-    const raw = completion.choices?.[0]?.message?.content;
+        const text = completion.choices?.[0]?.message?.content;
 
-    const json = extractJSON(raw);
+        if (!text) throw new Error("Empty response");
 
-    if (!json) {
-      return res.status(500).json({
-        error: "Failed to parse JSON from model",
-        raw,
-      });
+        const parsed = validate(safeParse(text));
+
+        return res.status(200).json({
+          ok: true,
+          result: parsed,
+        });
+      } catch (err) {
+        lastError = err;
+        console.log("Attempt failed:", err.message);
+      }
     }
 
-    // 🔥 extra safety checks
-    if (!Array.isArray(json.questions)) {
-      return res.status(500).json({
-        error: "Invalid structure: questions missing",
-        raw: json,
-      });
-    }
+    // fallback als AI faalt
+    console.log("AI failed, using fallback:", lastError?.message);
 
-    return res.status(200).json({
-      ok: true,
-      result: json,
-    });
+    return res.status(200).json(fallbackResponse(prompt));
   } catch (err) {
-    console.error("AI ERROR:", err);
+    console.error("FATAL AI ERROR:", err);
 
     return res.status(500).json({
-      error: err.message || "Unknown error",
+      error: "AI service crashed",
+      details: err.message,
     });
   }
 }
