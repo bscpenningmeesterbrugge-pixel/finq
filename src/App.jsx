@@ -339,8 +339,6 @@ return;
 
           ggenerated_questions: aiData.result?.questions || [],
 
-          console.log("STATUS:", aiResponse.status);
-console.log("RAW:", await aiResponse.text());
           
         },
       ]);
