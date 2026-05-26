@@ -1,5 +1,11 @@
 import OpenAI from "openai";
 
+function extractJSON(text) {
+  const match = text.match(/\[[\s\S]*\]/);
+  if (!match) throw new Error("No JSON array found");
+  return JSON.parse(match[0]);
+}
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -20,44 +26,32 @@ export default async function handler(
 
     const { prompt } = req.body;
 
-    const response =
-      await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+    const response = await openai.chat.completions.create({
+  model: "gpt-4o-mini",
+  response_format: { type: "json_object" },
+  messages: [
+    {
+      role: "system",
+      content: `
+Geef altijd dit formaat terug:
 
-        messages: [
-          {
-            role: "system",
-            content:
-              `
-Maak multiple choice oefeningen.
-
-Geef ALTIJD geldige JSON terug.
-
-Formaat:
-
-[
-  {
-    "question":"...",
-    "options":[
-      "...",
-      "...",
-      "...",
-      "..."
-    ],
-    "correctAnswer":0
-  }
-]
-`,
-          },
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-
-        temperature: 0.7,
-      });
-
+{
+  "questions": [
+    {
+      "question": "...",
+      "options": ["...", "...", "...", "..."],
+      "correctAnswer": 0
+    }
+  ]
+}
+      `,
+    },
+    {
+      role: "user",
+      content: prompt,
+    },
+  ],
+});
     const text =
       response.choices[0]
         .message.content;
@@ -67,7 +61,7 @@ Formaat:
   .replace(/```/g, "")
   .trim();
 
-const parsed = JSON.parse(cleaned);
+const parsed = JSON.parse(response.choices[0].message.content);
 
     res.status(200).json({
       result: parsed,
