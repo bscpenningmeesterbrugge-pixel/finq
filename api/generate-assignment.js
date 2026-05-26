@@ -8,10 +8,17 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+function safeJSONParse(text) {
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    console.log("RAW AI OUTPUT:", text);
+    return null;
+  }
+}
+
 export default async function handler(req, res) {
   try {
-    console.log("API HIT");
-
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Only POST allowed" });
     }
@@ -29,32 +36,46 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "system",
-          content: "Geef enkel geldige JSON, geen tekst.",
+          content:
+            "Je bent een AI die ALTIJD geldige JSON teruggeeft. Geen tekst.",
         },
         {
           role: "user",
-          content: `
-Maak 3 multiple choice vragen over: ${prompt}
-
+          content: `Maak 3 MC vragen over: ${prompt}
+Return EXACT:
 {
   "questions": [
     {
-      "question": "",
+      "question": "string",
       "options": ["A","B","C","D"],
       "correct": 0
     }
   ]
-}
-          `,
+}`,
         },
       ],
     });
 
-    const data = JSON.parse(completion.choices[0].message.content);
+    const raw = completion.choices?.[0]?.message?.content;
+
+    if (!raw) {
+      return res.status(500).json({
+        error: "Empty OpenAI response",
+      });
+    }
+
+    const json = safeJSONParse(raw);
+
+    if (!json) {
+      return res.status(500).json({
+        error: "Invalid JSON from OpenAI",
+        raw,
+      });
+    }
 
     return res.status(200).json({
       ok: true,
-      result: data,
+      result: json,
     });
   } catch (err) {
     console.error("FATAL ERROR:", err);
