@@ -1210,7 +1210,7 @@ Inbox
 
 
 ))
-})}
+})
 
 
     {/* SUBMISSIONS */}
