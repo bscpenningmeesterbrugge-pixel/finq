@@ -62,8 +62,12 @@ Formaat:
       response.choices[0]
         .message.content;
 
-    const parsed =
-      JSON.parse(text);
+    const cleaned = text
+  .replace(/```json/g, "")
+  .replace(/```/g, "")
+  .trim();
+
+const parsed = JSON.parse(cleaned);
 
     res.status(200).json({
       result: parsed,
