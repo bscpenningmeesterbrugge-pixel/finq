@@ -337,8 +337,7 @@ return;
           student_id:
             selectedStudent,
 
-          generated_questions:
-  JSON.parse(aiData.result),
+          generated_questions: aiData.result.questions || aiData.result,
         },
       ]);
 
