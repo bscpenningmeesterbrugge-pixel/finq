@@ -1,67 +1,78 @@
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({
-      error: "Method not allowed",
-    });
-  }
+import OpenAI from "openai";
 
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export default async function handler(
+  req,
+  res
+) {
   try {
+    if (req.method !== "POST") {
+      return res
+        .status(405)
+        .json({
+          error:
+            "Method not allowed",
+        });
+    }
+
     const { prompt } = req.body;
 
-    const response = await fetch(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4.1-mini",
-          messages: [
-            {
-              role: "system",
-              content:
-                "Je bent een onderwijs AI die oefeningen genereert in JSON formaat.",
-            },
-            {
-              role: "user",
-              content: `
-Genereer 5 multiple choice oefeningen.
+    const response =
+      await openai.chat.completions.create({
+        model: "gpt-4o-mini",
 
-Onderwerp:
-${prompt}
+        messages: [
+          {
+            role: "system",
+            content:
+              `
+Maak multiple choice oefeningen.
 
-Geef enkel JSON terug in dit formaat:
+Geef ALTIJD geldige JSON terug.
+
+Formaat:
 
 [
   {
-    "question": "...",
-    "options": ["...", "...", "..."],
-    "correctAnswer": 0
+    "question":"...",
+    "options":[
+      "...",
+      "...",
+      "...",
+      "..."
+    ],
+    "correctAnswer":0
   }
 ]
 `,
-            },
-          ],
-          temperature: 0.7,
-        }),
-      }
-    );
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
 
-    const data = await response.json();
+        temperature: 0.7,
+      });
 
-    const content =
-      data.choices[0].message.content;
+    const text =
+      response.choices[0]
+        .message.content;
+
+    const parsed =
+      JSON.parse(text);
 
     res.status(200).json({
-      result: JSON.parse(content),
+      result: parsed,
     });
   } catch (err) {
     console.log(err);
 
     res.status(500).json({
-      error: "AI generation failed",
+      error: err.message,
     });
   }
 }
