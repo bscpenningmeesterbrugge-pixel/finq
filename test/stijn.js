@@ -1,1 +1,1 @@
-import iets from "./test/iets.js";
+import iets from "./test/stijn.js";
