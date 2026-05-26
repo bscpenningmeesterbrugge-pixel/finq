@@ -4,6 +4,10 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+export default function handler(req, res) {
+  return res.status(200).json({ ok: true });
+}
+
 // fallback zodat frontend nooit crasht
 function fallbackResponse(prompt) {
   return {
