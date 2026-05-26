@@ -18,23 +18,22 @@ messages: [
 {
 role: "system",
 content:
-"Je bent een leerkracht die oefeningen maakt in JSON formaat.",
+"Je bent een leerkracht die oefeningen maakt.",
 },
 {
 role: "user",
 content: `
-Maak 5 multiple choice oefeningen.
+Maak 5 multiple choice oefeningen in JSON formaat.
 
 Onderwerp:
 ${req.body.prompt}
 
-Geef ENKEL geldige JSON terug.
+Geef enkel geldige JSON terug.
 
 Voorbeeld:
-
 [
 {
-"question":"Wat is 21% van 100?",
+"question":"Wat is 21% btw op 100 euro?",
 "options":["10","21","50"],
 "answer":"21"
 }
@@ -42,15 +41,13 @@ Voorbeeld:
 `,
 },
 ],
-temperature: 0.7,
 }),
 }
 );
 
 ```
-const data = await response.json();
-
-console.log(data);
+const data =
+  await response.json();
 
 const result =
   data.choices?.[0]?.message?.content;
@@ -61,13 +58,8 @@ res.status(200).json({
 ```
 
 } catch (err) {
-console.log(err);
-
-```
 res.status(500).json({
-  error: err.message,
+error: err.message,
 });
-```
-
 }
 }
