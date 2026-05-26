@@ -307,41 +307,32 @@ async function addAssignment() {
 
   try {
     // AI oefeningen genereren
-    const aiResponse = await fetch("/api/generate-assignment", { method: "POST", headers: { "Content-Type": "application/json", }, body: JSON.stringify({ prompt: "test", }), });
+    const aiResponse = await fetch("/api/generate-assignment", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ prompt: newAssignment }),
+});
 
-    const aiData =
-await aiResponse.json();
+const aiData = await aiResponse.json();
 
+console.log("STATUS:", aiResponse.status);
 console.log("AI RESPONSE:", aiData);
 
 if (!aiResponse.ok) {
-alert(
-aiData.error ||
-"AI fout"
-);
-return;
+  alert(aiData.error || "AI fout");
+  return;
 }
 
-    console.log(aiData);
+const { error } = await supabase.from("assignments").insert([
+  {
+    title: newAssignment,
+    description: assignmentDescription,
+    deadline: assignmentDeadline,
+    student_id: selectedStudent,
 
-    // assignment opslaan
-    const { error } = await supabase
-      .from("assignments")
-      .insert([
-        {
-          title: newAssignment,
-          description:
-            assignmentDescription,
-          deadline:
-            assignmentDeadline,
-          student_id:
-            selectedStudent,
-
-          ggenerated_questions: aiData.result?.questions || [],
-
-          
-        },
-      ]);
+    generated_questions: aiData.result?.questions || [],
+  },
+]);
 
     if (error) {
       alert(error.message);
