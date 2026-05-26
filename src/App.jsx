@@ -337,7 +337,11 @@ return;
           student_id:
             selectedStudent,
 
-          generated_questions: aiData.result.questions || aiData.result,
+          ggenerated_questions: aiData.result?.questions || [],
+
+          console.log("STATUS:", aiResponse.status);
+console.log("RAW:", await aiResponse.text());
+          
         },
       ]);
 
