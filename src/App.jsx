@@ -329,7 +329,6 @@ const { error } = await supabase.from("assignments").insert([
     description: assignmentDescription,
     deadline: assignmentDeadline,
     student_id: selectedStudent,
-
     generated_questions: aiData.result?.questions || [],
   },
 ]);
