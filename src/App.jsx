@@ -1195,9 +1195,13 @@ Inbox
     Assignment indienen
   </button>
 </div>
-        )}
-      </div>
-    ))}
+       
+</div>
+
+
+))
+})}
+
 
     {/* SUBMISSIONS */}
     {role === "teacher" && (
