@@ -307,20 +307,15 @@ async function addAssignment() {
 
   try {
     // AI oefeningen genereren
-    const aiResponse = await fetch(
-      "/api/generate-assignment",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-        body: JSON.stringify({
-          prompt:
-            assignmentDescription,
-        }),
-      }
-    );
+    const aiResponse = await fetch("/api/generate-assignment", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    prompt: "Maak een oefening over BTW",
+  }),
+});
 
     const aiData =
 await aiResponse.json();
