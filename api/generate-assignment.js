@@ -1,10 +1,6 @@
 import OpenAI from "openai";
 
-function extractJSON(text) {
-  const match = text.match(/\[[\s\S]*\]/);
-  if (!match) throw new Error("No JSON array found");
-  return JSON.parse(match[0]);
-}
+
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -61,7 +57,7 @@ Geef altijd dit formaat terug:
   .replace(/```/g, "")
   .trim();
 
-const parsed = JSON.parse(response.choices[0].message.content);
+
 
     res.status(200).json({
       result: parsed,
