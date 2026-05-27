@@ -53,6 +53,7 @@ const [assignmentDeadline, setAssignmentDeadline] = useState("");
 const [activePage, setActivePage] = useState("dashboard");
   const [role, setRole] = useState("student");
   const [newAssignment, setNewAssignment] = useState("");
+  const [answers, setAnswers] = useState({});
   
 
 const [messages, setMessages] = useState([]);
@@ -73,6 +74,17 @@ const [newMessageContent, setNewMessageContent] = useState("");
     : submissions.filter(
         (s) => s.student_id === user?.id
       );
+
+  const submitQuiz = (assignmentId) => {
+  const result = Object.keys(answers)
+    .filter((k) => k.startsWith(assignmentId))
+    .map((k) => ({
+      questionKey: k,
+      answer: answers[k],
+    }));
+
+  console.log(result);
+};
 
 const submittedAssignmentIds =
   submissions
@@ -983,24 +995,46 @@ Inbox
           border: "1px solid #e2e8f0",
           boxShadow:
             "0 2px 10px rgba(0,0,0,0.05)",
+          <button onClick={() => submitQuiz(a.id)}>
+  Quiz indienen
+</button>
         }}
       >
     
-       {a.generated_questions?.map((q, i) => (
-  <div key={i} style={{ marginBottom: 12 }}>
-    <p style={{ fontWeight: "bold" }}>
+    {a.generated_questions?.map((q, qi) => (
+  <div key={qi} style={{ marginBottom: 16 }}>
+    <p style={{ fontWeight: "bold", marginBottom: 8 }}>
       {q.question}
     </p>
 
-    {q.options?.length > 0 && (
-      <ul>
-        {q.options.map((o, idx) => (
-          <li key={idx}>{o}</li>
-        ))}
-      </ul>
-    )}
+    {q.options?.map((o, oi) => (
+      <label
+        key={oi}
+        style={{
+          display: "block",
+          marginBottom: 6,
+          cursor: "pointer",
+        }}
+      >
+        <input
+          type="radio"
+          name={`q-${a.id}-${qi}`}
+          value={o}
+          checked={answers[`${a.id}-${qi}`] === o}
+          onChange={() =>
+            setAnswers({
+              ...answers,
+              [`${a.id}-${qi}`]: o,
+            })
+          }
+          style={{ marginRight: 8 }}
+        />
+
+        {o}
+      </label>
+    ))}
   </div>
-))}   
+))}
         
   <h3
     style={{
