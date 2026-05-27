@@ -837,7 +837,11 @@ Inbox
     if (role === "teacher") return true;
     return a.status !== "ingediend";
   })
-  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  .sort(
+    (a, b) =>
+      new Date(b.created_at) -
+      new Date(a.created_at)
+  )
   .map((a) => (
     <div
       key={a.id}
@@ -846,77 +850,87 @@ Inbox
         borderRadius: 20,
         padding: 24,
         marginBottom: 20,
-        border: "1px solid #e2e8f0",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
       }}
     >
-      {/* TITLE */}
-      <h3 style={{ marginBottom: 10 }}>{a.title}</h3>
+      <h3>{a.title}</h3>
 
-      {/* DESCRIPTION */}
-      <p style={{ marginBottom: 14, color: "#475569" }}>
-        {a.description}
-      </p>
+      <p>{a.description}</p>
 
-      {/* QUIZ */}
+      {Array.isArray(a.generated_questions) &&
+        a.generated_questions.map((q, qi) => (
+          <div key={qi}>
+            <p>
+              <strong>{q.question}</strong>
+            </p>
+
+            {q.options.map((o, oi) => (
+              <label
+                key={oi}
+                style={{
+                  display: "block",
+                  marginTop: 6,
+                }}
+              >
+                <input
+                  type="radio"
+                  name={`q-${a.id}-${qi}`}
+                  value={o}
+                  checked={
+                    answers[
+                      `${a.id}-${qi}`
+                    ] === o
+                  }
+                  onChange={() =>
+                    setAnswers({
+                      ...answers,
+                      [`${a.id}-${qi}`]: o,
+                    })
+                  }
+                />
+
+                {o}
+              </label>
+            ))}
+          </div>
+        ))}
+
+      <textarea
+        placeholder="Typ hier je antwoord..."
+        value={submissionTexts[a.id] || ""}
+        onChange={(e) =>
+          setSubmissionTexts({
+            ...submissionTexts,
+            [a.id]: e.target.value,
+          })
+        }
+        rows={5}
+        style={{
+          width: "100%",
+          marginTop: 20,
+          padding: 14,
+          borderRadius: 12,
+          border: "1px solid #ddd",
+        }}
+      />
+
       <button
         onClick={() =>
-          submitQuiz(a.id, a.generated_questions?.length || 0)
+          submitAssignment(a.id)
         }
         style={{
-          marginBottom: 16,
-          padding: "10px 14px",
+          marginTop: 16,
+          padding: "12px 18px",
           borderRadius: 10,
           border: "none",
-          background: "#0f172a",
+          background: "#2563eb",
           color: "white",
           cursor: "pointer",
         }}
       >
-        Quiz indienen
+        Assignment indienen
       </button>
-
-     {/* QUESTIONS */}
-{Array.isArray(a.generated_questions) &&
-  a.generated_questions.map((q, qi) => {
-    if (!q || !Array.isArray(q.options)) return null;
-
-    return (
-      <div key={qi} style={{ marginBottom: 16 }}>
-        <p style={{ fontWeight: "bold" }}>
-          {q.question}
-        </p>
-
-        {q.options.map((o, oi) => (
-          <label
-            key={oi}
-            style={{
-              display: "block",
-              marginTop: 6,
-            }}
-          >
-            <input
-              type="radio"
-              name={`q-${a.id}-${qi}`}
-              value={o}
-              checked={
-                answers[`${a.id}-${qi}`] === o
-              }
-              onChange={() =>
-                setAnswers({
-                  ...answers,
-                  [`${a.id}-${qi}`]: o,
-                })
-              }
-              style={{ marginRight: 8 }}
-            />
-            {o}
-          </label>
-        ))}
-      </div>
-    );
-  })}
-    
+    </div>
+  ))}
        {/* SUBMISSIONS */}
     {role === "teacher" && (
       <div style={{ marginTop: 40 }}>
