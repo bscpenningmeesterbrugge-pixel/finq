@@ -1115,7 +1115,7 @@ Inbox
 </div>
         
 
-        <div
+<div
   style={{
     background:
       a.status === "ingediend"
@@ -1140,13 +1140,7 @@ Inbox
         </div>
 
        <div
-  style={{
-    marginTop: 20,
-    display: "flex",
-    flexDirection: "column",
-    gap: 20,
-  }}
->
+ 
 
 
   <textarea
