@@ -831,7 +831,9 @@ Inbox
 </div>
   
 </div>   
-   
+
+     </>
+)}
    {/* ASSIGNMENTS */}
 {activePage === "assignments" && (
   <>
