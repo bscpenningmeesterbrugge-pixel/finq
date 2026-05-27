@@ -986,19 +986,22 @@ Inbox
   )
   .map((a) => (
     <div
-        key={a.id}
-        style={{
-          background: "white",
-          borderRadius: 20,
-          padding: 24,
-          marginBottom: 20,
-          border: "1px solid #e2e8f0",
-          boxShadow:
-            "0 2px 10px rgba(0,0,0,0.05)",
-          <button onClick={() => submitQuiz(a.id)}>
-  Quiz indienen
-</button>
-        }}
+  key={a.id}
+  style={{
+    background: "white",
+    borderRadius: 20,
+    padding: 24,
+    marginBottom: 20,
+    border: "1px solid #e2e8f0",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+  }}
+>
+
+  {/* QUIZ BUTTON HIER */}
+  <button onClick={() => submitQuiz(a.id)}>
+    Quiz indienen
+  </button>
+        
       >
     
     {a.generated_questions?.map((q, qi) => (
