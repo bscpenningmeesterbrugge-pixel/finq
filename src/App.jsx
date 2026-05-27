@@ -966,227 +966,143 @@ Inbox
     )}
 
     {/* ASSIGNMENTS */}
-    {assignments
+{assignments
   .filter((a) => {
-    // teacher ziet alles
-    if (role === "teacher") {
-      return true;
-    }
-
-    // student ziet enkel open opdrachten
+    if (role === "teacher") return true;
     return a.status !== "ingediend";
   })
-  .sort(
-    (a, b) =>
-      new Date(b.created_at) -
-      new Date(a.created_at)
-  )
+  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
   .map((a) => (
     <div
-  key={a.id}
-  style={{
-    background: "white",
-    borderRadius: 20,
-    padding: 24,
-    marginBottom: 20,
-    border: "1px solid #e2e8f0",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-  }}
->
+      key={a.id}
+      style={{
+        background: "white",
+        borderRadius: 20,
+        padding: 24,
+        marginBottom: 20,
+        border: "1px solid #e2e8f0",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+      }}
+    >
+      {/* TITLE */}
+      <h3 style={{ marginBottom: 10 }}>{a.title}</h3>
 
-  {/* QUIZ BUTTON HIER */}
- <button
-  onClick={() =>
-    submitQuiz(a.id, a.generated_questions?.length || 0)
-  }
->
-  Quiz indienen
-</button>
-        
-      
-    
-    {a.generated_questions?.map((q, qi) => (
-  <div key={qi} style={{ marginBottom: 16 }}>
-    <p style={{ fontWeight: "bold", marginBottom: 8 }}>
-      {q.question}
-    </p>
+      {/* DESCRIPTION */}
+      <p style={{ marginBottom: 14, color: "#475569" }}>
+        {a.description}
+      </p>
 
-    {q.options?.map((o, oi) => (
-      <label
-        key={oi}
+      {/* QUIZ */}
+      <button
+        onClick={() =>
+          submitQuiz(a.id, a.generated_questions?.length || 0)
+        }
         style={{
-          display: "block",
-          marginBottom: 6,
+          marginBottom: 16,
+          padding: "10px 14px",
+          borderRadius: 10,
+          border: "none",
+          background: "#0f172a",
+          color: "white",
           cursor: "pointer",
         }}
       >
-        <input
-          type="radio"
-          name={`q-${a.id}-${qi}`}
-          value={o}
-          checked={answers[`${a.id}-${qi}`] === o}
-          onChange={() =>
-            setAnswers({
-              ...answers,
-              [`${a.id}-${qi}`]: o,
-            })
-          }
-          style={{ marginRight: 8 }}
-        />
+        Quiz indienen
+      </button>
 
-        {o}
-      </label>
-    ))}
-  </div>
-))}
-        
-  <h3
-    style={{
-      marginBottom: 10,
-      color: "#0f172a",
-      fontSize: 22,
-    }}
-  >
-    {a.title}
-  </h3>
+      {/* QUESTIONS */}
+      {a.generated_questions?.map((q, qi) => (
+        <div key={qi} style={{ marginBottom: 16 }}>
+          <p style={{ fontWeight: "bold" }}>{q.question}</p>
 
-  <p
-    style={{
-      color: "#475569",
-      lineHeight: 1.6,
-      marginBottom: 14,
-    }}
-  >
-    {a.description}
-  </p>
+          {q.options?.map((o, oi) => (
+            <label key={oi} style={{ display: "block", marginTop: 6 }}>
+              <input
+                type="radio"
+                name={`q-${a.id}-${qi}`}
+                value={o}
+                checked={answers[`${a.id}-${qi}`] === o}
+                onChange={() =>
+                  setAnswers({
+                    ...answers,
+                    [`${a.id}-${qi}`]: o,
+                  })
+                }
+                style={{ marginRight: 8 }}
+              />
+              {o}
+            </label>
+          ))}
+        </div>
+      ))}
 
-  <div
-    style={{
-      marginTop: 14,
-      display: "flex",
-      gap: 10,
-      flexWrap: "wrap",
-    }}
-  >
-    <div
-      style={{
-        background: "#f1f5f9",
-        padding: "6px 12px",
-        borderRadius: 999,
-        fontSize: 13,
-      }}
-    >
-     <span
-  style={{
-    color:
-      new Date(a.deadline) < new Date()
-        ? "red"
-        : "#475569",
-    fontWeight: "bold",
-  }}
->
-  📅 Deadline: {a.deadline || "Geen"}
-</span>
-    </div>
-
-  <div
-  style={{
-    background:
-      a.status === "ingediend"
-        ? "#dcfce7"
-        : "#dbeafe",
-
-    color:
-      a.status === "ingediend"
-        ? "#166534"
-        : "#1d4ed8",
-
-    padding: "6px 12px",
-    borderRadius: 999,
-    fontSize: 13,
-    fontWeight: "bold",
-  }}
->
-  {a.status === "ingediend"
-    ? "✅ Ingediend"
-    : "📘 Open"}
-</div>
-  </div>
-</div>
-        
-
-<div
-  style={{
-    background:
-      a.status === "ingediend"
-        ? "#dcfce7"
-        : "#dbeafe",
-
-    color:
-      a.status === "ingediend"
-        ? "#166534"
-        : "#1d4ed8",
-
-    padding: "6px 12px",
-    borderRadius: 999,
-    fontSize: 14,
-    fontWeight: "bold",
-  }}
->
-  {a.status === "ingediend"
-    ? "✅ Ingediend"
-    : "📘 Open"}
-</div>
+      {/* DEADLINE + STATUS */}
+      <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+        <div
+          style={{
+            background: "#f1f5f9",
+            padding: "6px 12px",
+            borderRadius: 999,
+            fontSize: 13,
+          }}
+        >
+          📅 {a.deadline || "Geen deadline"}
         </div>
 
-       <div>
- 
+        <div
+          style={{
+            background:
+              a.status === "ingediend" ? "#dcfce7" : "#dbeafe",
+            color:
+              a.status === "ingediend" ? "#166534" : "#1d4ed8",
+            padding: "6px 12px",
+            borderRadius: 999,
+            fontSize: 13,
+            fontWeight: "bold",
+          }}
+        >
+          {a.status === "ingediend" ? "✅ Ingediend" : "📘 Open"}
+        </div>
+      </div>
 
+      {/* SUBMISSION TEXT */}
+      <textarea
+        placeholder="Extra uitleg..."
+        value={submissionTexts[a.id] || ""}
+        onChange={(e) =>
+          setSubmissionTexts({
+            ...submissionTexts,
+            [a.id]: e.target.value,
+          })
+        }
+        rows={4}
+        style={{
+          marginTop: 14,
+          width: "100%",
+          padding: 14,
+          borderRadius: 12,
+          border: "1px solid #ddd",
+        }}
+      />
 
-  <textarea
-    placeholder="Extra uitleg of opmerkingen..."
-    value={
-      submissionTexts[a.id] || ""
-    }
-    onChange={(e) =>
-      setSubmissionTexts({
-        ...submissionTexts,
-        [a.id]: e.target.value,
-      })
-    }
-    rows={4}
-    style={{
-      padding: 14,
-      borderRadius: 12,
-      border: "1px solid #ddd",
-    }}
-  />
-
-  <button
-    onClick={() =>
-      submitAssignment(a.id)
-    }
-    style={{
-      background: "#2563eb",
-      color: "white",
-      border: "none",
-      padding: "12px 18px",
-      borderRadius: 12,
-      cursor: "pointer",
-      fontWeight: "bold",
-    }}
-  >
-    Assignment indienen
-  </button>
-</div>
-       
-</div>
-
-
-))}
-
-
-    {/* SUBMISSIONS */}
+      <button
+        onClick={() => submitAssignment(a.id)}
+        style={{
+          marginTop: 10,
+          background: "#2563eb",
+          color: "white",
+          border: "none",
+          padding: "12px 18px",
+          borderRadius: 12,
+          cursor: "pointer",
+        }}
+      >
+        Assignment indienen
+      </button>
+    </div>
+  ))}
+    
+       {/* SUBMISSIONS */}
     {role === "teacher" && (
       <div style={{ marginTop: 40 }}>
         <h2>Ingediende assignments</h2>
