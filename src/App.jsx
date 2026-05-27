@@ -914,7 +914,7 @@ Inbox
         Assignment indienen
       </button>
     </div>
-  ))}
+        })}
 
     {/* ASSIGNMENTS */}
     console.log(assignments);
