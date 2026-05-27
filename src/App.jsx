@@ -1010,98 +1010,46 @@ Inbox
         Quiz indienen
       </button>
 
-      {/* QUESTIONS */}
-      {Array.isArray(a.generated_questions) &&
-  a.generated_questions.map((q, qi) => (
-        <div key={qi} style={{ marginBottom: 16 }}>
-          <p style={{ fontWeight: "bold" }}>{q.question}</p>
+     {/* QUESTIONS */}
+{Array.isArray(a.generated_questions) &&
+  a.generated_questions.map((q, qi) => {
+    if (!q || !Array.isArray(q.options)) return null;
 
-          {q.options?.map((o, oi) => (
-            <label key={oi} style={{ display: "block", marginTop: 6 }}>
-              <input
-                type="radio"
-                name={`q-${a.id}-${qi}`}
-                value={o}
-                checked={answers[`${a.id}-${qi}`] === o}
-                onChange={() =>
-                  setAnswers({
-                    ...answers,
-                    [`${a.id}-${qi}`]: o,
-                  })
-                }
-                style={{ marginRight: 8 }}
-              />
-              {o}
-            </label>
-          ))}
-        </div>
-      ))}
+    return (
+      <div key={qi} style={{ marginBottom: 16 }}>
+        <p style={{ fontWeight: "bold" }}>
+          {q.question}
+        </p>
 
-      {/* DEADLINE + STATUS */}
-      <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
-        <div
-          style={{
-            background: "#f1f5f9",
-            padding: "6px 12px",
-            borderRadius: 999,
-            fontSize: 13,
-          }}
-        >
-          📅 {a.deadline || "Geen deadline"}
-        </div>
-
-        <div
-          style={{
-            background:
-              a.status === "ingediend" ? "#dcfce7" : "#dbeafe",
-            color:
-              a.status === "ingediend" ? "#166534" : "#1d4ed8",
-            padding: "6px 12px",
-            borderRadius: 999,
-            fontSize: 13,
-            fontWeight: "bold",
-          }}
-        >
-          {a.status === "ingediend" ? "✅ Ingediend" : "📘 Open"}
-        </div>
+        {q.options.map((o, oi) => (
+          <label
+            key={oi}
+            style={{
+              display: "block",
+              marginTop: 6,
+            }}
+          >
+            <input
+              type="radio"
+              name={`q-${a.id}-${qi}`}
+              value={o}
+              checked={
+                answers[`${a.id}-${qi}`] === o
+              }
+              onChange={() =>
+                setAnswers({
+                  ...answers,
+                  [`${a.id}-${qi}`]: o,
+                })
+              }
+              style={{ marginRight: 8 }}
+            />
+            {o}
+          </label>
+        ))}
       </div>
-
-      {/* SUBMISSION TEXT */}
-      <textarea
-        placeholder="Extra uitleg..."
-        value={submissionTexts[a.id] || ""}
-        onChange={(e) =>
-          setSubmissionTexts({
-            ...submissionTexts,
-            [a.id]: e.target.value,
-          })
-        }
-        rows={4}
-        style={{
-          marginTop: 14,
-          width: "100%",
-          padding: 14,
-          borderRadius: 12,
-          border: "1px solid #ddd",
-        }}
-      />
-
-      <button
-        onClick={() => submitAssignment(a.id)}
-        style={{
-          marginTop: 10,
-          background: "#2563eb",
-          color: "white",
-          border: "none",
-          padding: "12px 18px",
-          borderRadius: 12,
-          cursor: "pointer",
-        }}
-      >
-        Assignment indienen
-      </button>
-    </div>
-  ))}
+    );
+  })}
     
        {/* SUBMISSIONS */}
     {role === "teacher" && (
