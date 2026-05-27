@@ -368,7 +368,12 @@ async function submitAssignment(
 
   if (!content) return;
 
-  // submission opslaan
+  const assignmentAnswers = Object.fromEntries(
+    Object.entries(answers).filter(([key]) =>
+      key.startsWith(`${assignmentId}-`)
+    )
+  );
+
   const { error } = await supabase
     .from("submissions")
     .insert([
@@ -376,41 +381,9 @@ async function submitAssignment(
         assignment_id: assignmentId,
         student_id: user.id,
         content: content,
-quiz_answers: answers,
+        quiz_answers: assignmentAnswers,
       },
     ]);
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  // assignment status aanpassen
-  const { error: updateError } =
-    await supabase
-      .from("assignments")
-      .update({
-        status: "ingediend",
-      })
-      .eq("id", assignmentId);
-
-  if (updateError) {
-    alert(updateError.message);
-    return;
-  }
-
-  // textarea leegmaken
-  setSubmissionTexts({
-    ...submissionTexts,
-    [assignmentId]: "",
-  });
-
-  // alles opnieuw laden
-  loadAssignments(user.id, role);
-  loadSubmissions();
-
-  alert("Assignment ingediend!");
-}
   
 async function addMessage() {
 if (!newMessageTitle) return;
