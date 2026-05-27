@@ -993,6 +993,21 @@ Inbox
             marginBottom: 14,
           }}
         >
+
+          {a.generated_questions?.map((q, i) => (
+  <div key={i} style={{ marginTop: 12 }}>
+    <p><strong>{q.question}</strong></p>
+
+    {q.options?.length > 0 && (
+      <ul>
+        {q.options.map((o, idx) => (
+          <li key={idx}>{o}</li>
+        ))}
+      </ul>
+    )}
+  </div>
+))}
+          
          <div>
   <h3
     style={{
