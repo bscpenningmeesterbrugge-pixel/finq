@@ -329,7 +329,17 @@ const { error } = await supabase.from("assignments").insert([
     description: assignmentDescription,
     deadline: assignmentDeadline,
     student_id: selectedStudent,
-   generated_questions: aiData.result.questions,
+   {a.generated_questions?.map((q, i) => (
+  <div key={i}>
+    <p>{q.question}</p>
+
+    <ul>
+      {q.options.map((o, idx) => (
+        <li key={idx}>{o}</li>
+      ))}
+    </ul>
+  </div>
+))}
 
   },
 ]);
