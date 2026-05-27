@@ -995,9 +995,13 @@ Inbox
 >
 
   {/* QUIZ BUTTON HIER */}
-  <button onClick={() => submitQuiz(a.id)}>
-    Quiz indienen
-  </button>
+ <button
+  onClick={() =>
+    submitQuiz(a.id, a.generated_questions?.length || 0)
+  }
+>
+  Quiz indienen
+</button>
         
       >
     
