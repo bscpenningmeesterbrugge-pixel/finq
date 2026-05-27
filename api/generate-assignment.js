@@ -1,7 +1,10 @@
+const USE_MOCK_AI = true; // 👈 BOVENAAN DEFINIEREN
+
 export default async function handler(req, res) {
   try {
     console.log("AI MODE:", USE_MOCK_AI ? "MOCK" : "OPENAI");
 
+    // 🟢 MOCK MODE
     if (USE_MOCK_AI) {
       return res.status(200).json({
         ok: true,
@@ -32,7 +35,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // REAL OPENAI (later terug aanzetten)
+    // 🔴 REAL OPENAI MODE
     const response = await fetch(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -60,6 +63,7 @@ export default async function handler(req, res) {
       ok: true,
       result: data.choices?.[0]?.message?.content,
     });
+
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: err.message });
