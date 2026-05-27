@@ -1,8 +1,15 @@
 export default async function handler(req, res) {
-  console.log("FUNCTION START");
+  console.log("FUNCTION STARTED");
 
   try {
-    console.log("OPENAI KEY:", process.env.OPENAI_API_KEY);
+    const key = process.env.OPENAI_API_KEY;
+
+    if (!key) {
+      console.log("❌ NO API KEY FOUND");
+      return res.status(500).json({ error: "Missing API key" });
+    }
+
+    console.log("KEY OK:", key.slice(0, 8));
 
     const response = await fetch(
       "https://api.openai.com/v1/chat/completions",
@@ -10,7 +17,7 @@ export default async function handler(req, res) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          Authorization: `Bearer ${key}`,
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
@@ -24,19 +31,28 @@ export default async function handler(req, res) {
       }
     );
 
-    console.log("OPENAI STATUS:", response.status);
+    console.log("STATUS:", response.status);
 
-    const data = await response.json();
+    const text = await response.text();
+    console.log("RAW RESPONSE:", text);
 
-    console.log("OPENAI DATA:", data);
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      return res.status(500).json({
+        error: "Invalid JSON from OpenAI",
+        raw: text,
+      });
+    }
 
-    res.status(200).json({
+    return res.status(200).json({
       result: data.choices?.[0]?.message?.content,
     });
   } catch (err) {
-    console.log("SERVER ERROR:", err);
+    console.log("FATAL:", err);
 
-    res.status(500).json({
+    return res.status(500).json({
       error: err.message,
     });
   }
