@@ -1,59 +1,67 @@
 export default async function handler(req, res) {
-  console.log("FUNCTION STARTED");
-
   try {
-    const key = process.env.OPENAI_API_KEY;
+    console.log("AI MODE:", USE_MOCK_AI ? "MOCK" : "OPENAI");
 
-    if (!key) {
-      console.log("❌ NO API KEY FOUND");
-      return res.status(500).json({ error: "Missing API key" });
+    if (USE_MOCK_AI) {
+      return res.status(200).json({
+        ok: true,
+        result: {
+          questions: [
+            {
+              question: "Wat betekent BTW?",
+              options: [
+                "Belasting Toegevoegde Waarde",
+                "Bank Transfer Waarde",
+                "Basis Totale Winst",
+                "Belasting Technische Waarde"
+              ],
+              correct: 0
+            },
+            {
+              question: "Hoeveel is 21% van 100?",
+              options: ["10", "21", "15", "50"],
+              correct: 1
+            },
+            {
+              question: "BTW is een ...",
+              options: ["belasting", "lening", "subsidie", "bonus"],
+              correct: 0
+            }
+          ]
+        }
+      });
     }
 
-    console.log("KEY OK:", key.slice(0, 8));
-
+    // REAL OPENAI (later terug aanzetten)
     const response = await fetch(
       "https://api.openai.com/v1/chat/completions",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${key}`,
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
+          temperature: 0.2,
           messages: [
             {
               role: "user",
-              content: "Maak 3 simpele btw oefeningen.",
-            },
+              content: "Maak 3 multiple choice btw oefeningen in JSON format"
+            }
           ],
         }),
       }
     );
 
-    console.log("STATUS:", response.status);
-
-    const text = await response.text();
-    console.log("RAW RESPONSE:", text);
-
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (e) {
-      return res.status(500).json({
-        error: "Invalid JSON from OpenAI",
-        raw: text,
-      });
-    }
+    const data = await response.json();
 
     return res.status(200).json({
+      ok: true,
       result: data.choices?.[0]?.message?.content,
     });
   } catch (err) {
-    console.log("FATAL:", err);
-
-    return res.status(500).json({
-      error: err.message,
-    });
+    console.log(err);
+    return res.status(500).json({ error: err.message });
   }
 }
