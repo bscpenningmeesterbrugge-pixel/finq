@@ -302,47 +302,37 @@ if (data.user) {
 }
 
 async function addAssignment() {
-  if (!newAssignment || !selectedStudent)
-    return;
+  if (!newAssignment || !selectedStudent) return;
 
   try {
-    // AI oefeningen genereren
     const aiResponse = await fetch("/api/generate-assignment", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ prompt: newAssignment }),
-});
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: newAssignment }),
+    });
 
-const aiData = await aiResponse.json();
+    const aiData = await aiResponse.json();
 
-console.log("STATUS:", aiResponse.status);
-console.log("AI RESPONSE:", aiData);
+    console.log("AI STATUS:", aiResponse.status);
+    console.log("AI DATA:", aiData);
 
-if (!aiResponse.ok) {
-  alert(aiData.error || "AI fout");
-  return;
-}
+    if (!aiResponse.ok) {
+      alert(aiData.error || "AI fout");
+      return;
+    }
 
-const { error } = await supabase.from("assignments").insert([
-  {
-    title: newAssignment,
-    description: assignmentDescription,
-    deadline: assignmentDeadline,
-    student_id: selectedStudent,
-   {a.generated_questions?.map((q, i) => (
-  <div key={i}>
-    <p>{q.question}</p>
+    const { error } = await supabase.from("assignments").insert([
+      {
+        title: newAssignment,
+        description: assignmentDescription,
+        deadline: assignmentDeadline,
+        student_id: selectedStudent,
 
-    <ul>
-      {q.options.map((o, idx) => (
-        <li key={idx}>{o}</li>
-      ))}
-    </ul>
-  </div>
-))}
-
-  },
-]);
+        // ✅ HIER KOMT JE AI DATA (BELANGRIJK)
+        generated_questions: aiData.result || [],
+        status: "open",
+      },
+    ]);
 
     if (error) {
       alert(error.message);
@@ -356,15 +346,10 @@ const { error } = await supabase.from("assignments").insert([
 
     loadAssignments(user.id, role);
 
-    alert(
-      "AI assignment gemaakt!"
-    );
+    alert("AI assignment gemaakt!");
   } catch (err) {
     console.log(err);
-
-    alert(
-      "AI generatie mislukt"
-    );
+    alert("AI generatie mislukt");
   }
 }
   
