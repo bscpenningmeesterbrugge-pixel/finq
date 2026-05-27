@@ -999,7 +999,7 @@ Inbox
   onClick={() =>
     submitQuiz(a.id, a.generated_questions?.length || 0)
   }
->
+
   Quiz indienen
 </button>
         
@@ -1139,7 +1139,7 @@ Inbox
 </div>
         </div>
 
-       <div
+       <div>
  
 
 
