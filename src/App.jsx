@@ -384,6 +384,21 @@ async function submitAssignment(
         quiz_answers: assignmentAnswers,
       },
     ]);
+  if (error) {
+  alert(error.message);
+  return;
+}
+
+setSubmissionTexts({
+  ...submissionTexts,
+  [assignmentId]: "",
+});
+
+loadAssignments(user.id, role);
+loadSubmissions();
+
+alert("Assignment ingediend!");
+}
   
 async function addMessage() {
 if (!newMessageTitle) return;
