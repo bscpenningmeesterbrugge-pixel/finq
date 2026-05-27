@@ -831,106 +831,112 @@ Inbox
 </div>   
    
     {/* ASSIGNMENTS */}
-      
-{assignments
-  .filter((a) => {
-    if (role === "teacher") return true;
-    return a.status !== "ingediend";
-  })
-  .sort(
-    (a, b) =>
-      new Date(b.created_at) -
-      new Date(a.created_at)
-  )
-  .map((a) => (
-    <div
-      key={a.id}
-      style={{
-        background: "white",
-        borderRadius: 20,
-        padding: 24,
-        marginBottom: 20,
-      }}
-    >
-      <h3>{a.title}</h3>
 
-      <p>{a.description}</p>
+{activePage === "assignments" && (
+  <>
+    {assignments
+      .filter((a) => {
+        if (role === "teacher") return true;
+        return a.status !== "ingediend";
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.created_at) -
+          new Date(a.created_at)
+      )
+      .map((a) => (
+        <div
+          key={a.id}
+          style={{
+            background: "white",
+            borderRadius: 20,
+            padding: 24,
+            marginBottom: 20,
+          }}
+        >
+          <h3>{a.title}</h3>
 
-      {Array.isArray(a.generated_questions) &&
-        a.generated_questions.map((q, qi) => (
-          <div key={qi}>
-            <p>
-              <strong>{q.question}</strong>
-            </p>
+          <p>{a.description}</p>
 
-            {q.options.map((o, oi) => (
-              <label
-                key={oi}
-                style={{
-                  display: "block",
-                  marginTop: 6,
-                }}
-              >
-                <input
-                  type="radio"
-                  name={`q-${a.id}-${qi}`}
-                  value={o}
-                  checked={
-                    answers[
-                      `${a.id}-${qi}`
-                    ] === o
-                  }
-                  onChange={() =>
-                    setAnswers({
-                      ...answers,
-                      [`${a.id}-${qi}`]: o,
-                    })
-                  }
-                />
+          {Array.isArray(a.generated_questions) &&
+            a.generated_questions.map((q, qi) => (
+              <div key={qi}>
+                <p>
+                  <strong>{q.question}</strong>
+                </p>
 
-                {o}
-              </label>
+                {q.options.map((o, oi) => (
+                  <label
+                    key={oi}
+                    style={{
+                      display: "block",
+                      marginTop: 6,
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name={`q-${a.id}-${qi}`}
+                      value={o}
+                      checked={
+                        answers[
+                          `${a.id}-${qi}`
+                        ] === o
+                      }
+                      onChange={() =>
+                        setAnswers({
+                          ...answers,
+                          [`${a.id}-${qi}`]: o,
+                        })
+                      }
+                    />
+
+                    {o}
+                  </label>
+                ))}
+
+              </div>
             ))}
-          </div>
-        ))}
 
-      <textarea
-        placeholder="Typ hier je antwoord..."
-        value={submissionTexts[a.id] || ""}
-        onChange={(e) =>
-          setSubmissionTexts({
-            ...submissionTexts,
-            [a.id]: e.target.value,
-          })
-        }
-        rows={5}
-        style={{
-          width: "100%",
-          marginTop: 20,
-          padding: 14,
-          borderRadius: 12,
-          border: "1px solid #ddd",
-        }}
-      />
+          <textarea
+            placeholder="Typ hier je antwoord..."
+            value={submissionTexts[a.id] || ""}
+            onChange={(e) =>
+              setSubmissionTexts({
+                ...submissionTexts,
+                [a.id]: e.target.value,
+              })
+            }
+            rows={5}
+            style={{
+              width: "100%",
+              marginTop: 20,
+              padding: 14,
+              borderRadius: 12,
+              border: "1px solid #ddd",
+            }}
+          />
 
-      <button
-        onClick={() =>
-          submitAssignment(a.id)
-        }
-        style={{
-          marginTop: 16,
-          padding: "12px 18px",
-          borderRadius: 10,
-          border: "none",
-          background: "#2563eb",
-          color: "white",
-          cursor: "pointer",
-        }}
-      >
-        Assignment indienen
-      </button>
-    </div>
-  ))}
+          <button
+            onClick={() =>
+              submitAssignment(a.id)
+            }
+            style={{
+              marginTop: 16,
+              padding: "12px 18px",
+              borderRadius: 10,
+              border: "none",
+              background: "#2563eb",
+              color: "white",
+              cursor: "pointer",
+            }}
+          >
+            Assignment indienen
+          </button>
+        </div>
+      ))}
+  </>
+)}
+    
        {/* SUBMISSIONS */}
     {role === "teacher" && (
       <div style={{ marginTop: 40 }}>
