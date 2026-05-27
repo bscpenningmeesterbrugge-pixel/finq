@@ -828,142 +828,93 @@ Inbox
   </p>
 </div>
   
-</div>    {/* ASSIGNMENTS */}
-    {activePage === "dashboard" && (
+</div>   
+    {/* ASSIGNMENTS */}
+{assignments
+  .filter((a) => {
+    if (role === "teacher") return true;
+    return a.status !== "ingediend";
+  })
+  .sort(
+    (a, b) =>
+      new Date(b.created_at) -
+      new Date(a.created_at)
+  )
+  .map((a) => (
+    <div
+      key={a.id}
+      style={{
+        background: "white",
+        borderRadius: 20,
+        padding: 24,
+        marginBottom: 20,
+        border: "1px solid #e2e8f0",
+      }}
+    >
+      <h3>{a.title}</h3>
 
-  <div
-    style={{
-      background: "white",
-      borderRadius: 20,
-      padding: 24,
-    }}
-  >
-    <h2>Welkom terug 👋</h2>
+      <p>{a.description}</p>
 
+      {/* QUESTIONS */}
+      {Array.isArray(a.generated_questions) &&
+        a.generated_questions.map((q, qi) => {
+          if (!q || !Array.isArray(q.options))
+            return null;
 
-<p>
-  Je bent ingelogd op Ultimate Smartschool.
-</p>
-
-
-  </div>
-)}
-
-{activePage === "assignments" && (
-  <div
-    style={{
-      background: "white",
-      borderRadius: 20,
-      padding: 24,
-    }}
-  >
-    <h2 style={{ marginBottom: 24 }}>
-      Assignments
-    </h2>
-
-    {/* TEACHER CREATE */}
-    {role === "teacher" && (
-      <div
-        style={{
-          background: "#f8fafc",
-          padding: 20,
-          borderRadius: 18,
-          marginBottom: 30,
-          border: "1px solid #e2e8f0",
-        }}
-      >
-        <h3>Nieuwe assignment</h3>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-            marginTop: 14,
-          }}
-        >
-          <input
-  value={newAssignment}
-  onChange={(e) =>
-    setNewAssignment(e.target.value)
-  }
-  placeholder="Titel van assignment"
-  style={{
-    padding: 14,
-    borderRadius: 12,
-    border: "1px solid #ddd",
-  }}
-/>
-
-<textarea
-  value={assignmentDescription}
-  onChange={(e) =>
-    setAssignmentDescription(e.target.value)
-  }
-  placeholder="Beschrijving..."
-  rows={4}
-  style={{
-    padding: 14,
-    borderRadius: 12,
-    border: "1px solid #ddd",
-  }}
-/>
-
-<input
-  type="date"
-  value={assignmentDeadline}
-  onChange={(e) =>
-    setAssignmentDeadline(e.target.value)
-  }
-  style={{
-    padding: 14,
-    borderRadius: 12,
-    border: "1px solid #ddd",
-  }}
-/>
-         
-          <select
-            value={selectedStudent}
-            onChange={(e) =>
-              setSelectedStudent(e.target.value)
-            }
-            style={{
-              padding: 14,
-              borderRadius: 12,
-              border: "1px solid #ddd",
-            }}
-          >
-            <option value="">
-              Kies student
-            </option>
-
-            {students.map((s) => (
-              <option
-                key={s.id}
-                value={s.id}
+          return (
+            <div
+              key={qi}
+              style={{ marginBottom: 16 }}
+            >
+              <p
+                style={{
+                  fontWeight: "bold",
+                }}
               >
-                {s.email}
-              </option>
-            ))}
-          </select>
+                {q.question}
+              </p>
 
-          <button
-            onClick={addAssignment}
-            style={{
-              background: "#2563eb",
-              color: "white",
-              border: "none",
-              padding: "14px 18px",
-              borderRadius: 12,
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-          >
-            Assignment maken
-          </button>
-        </div>
-      </div>
-    )}
+              {q.options.map((o, oi) => (
+                <label
+                  key={oi}
+                  style={{
+                    display: "block",
+                    marginTop: 6,
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name={`q-${a.id}-${qi}`}
+                    value={o}
+                    checked={
+                      answers[
+                        `${a.id}-${qi}`
+                      ] === o
+                    }
+                    onChange={() =>
+                      setAnswers({
+                        ...answers,
+                        [`${a.id}-${qi}`]: o,
+                      })
+                    }
+                  />
+
+                  {o}
+                </label>
+              ))}
+            </div>
+          );
+        })}
+
+      <button
+        onClick={() =>
+          submitAssignment(a.id)
+        }
+      >
+        Assignment indienen
+      </button>
+    </div>
+  ))}
 
     {/* ASSIGNMENTS */}
     console.log(assignments);
