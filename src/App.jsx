@@ -1153,8 +1153,7 @@ Inbox
 </div>
 
 
-))
-}
+))}
 
 
     {/* SUBMISSIONS */}
