@@ -75,17 +75,14 @@ const [newMessageContent, setNewMessageContent] = useState("");
         (s) => s.student_id === user?.id
       );
 
-  const submitQuiz = (assignmentId) => {
-  const result = Object.keys(answers)
-    .filter((k) => k.startsWith(assignmentId))
-    .map((k) => ({
-      questionKey: k,
-      answer: answers[k],
-    }));
+  const submitQuiz = (assignmentId, questionsCount) => {
+  const result = Array.from({ length: questionsCount }).map((_, qi) => ({
+    questionKey: `${assignmentId}-${qi}`,
+    answer: answers[`${assignmentId}-${qi}`] || null,
+  }));
 
-  console.log(result);
+  console.log("QUIZ RESULT:", result);
 };
-
 const submittedAssignmentIds =
   submissions
     .filter(
