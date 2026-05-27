@@ -1111,47 +1111,7 @@ Inbox
     gap: 20,
   }}
 >
-  {a.generated_questions?.map(
-    (q, index) => (
-      <div
-        key={index}
-        style={{
-          background: "#f8fafc",
-          padding: 16,
-          borderRadius: 14,
-        }}
-      >
-        <h4>
-          Vraag {index + 1}
-        </h4>
 
-        <p>{q.question}</p>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 10,
-            marginTop: 10,
-          }}
-        >
-          {q.options.map(
-            (option, i) => (
-              <label key={i}>
-                <input
-                  type="radio"
-                  name={`question-${a.id}-${index}`}
-                />
-
-                {" "}
-                {option}
-              </label>
-            )
-          )}
-        </div>
-      </div>
-    )
-  )}
 
   <textarea
     placeholder="Extra uitleg of opmerkingen..."
