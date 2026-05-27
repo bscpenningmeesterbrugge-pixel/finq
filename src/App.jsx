@@ -338,7 +338,7 @@ async function addAssignment() {
         student_id: selectedStudent,
 
         // ✅ HIER KOMT JE AI DATA (BELANGRIJK)
-        generated_questions: aiData.result || [],
+      generated_questions: aiData.result.questions || [],
         status: "open",
       },
     ]);
@@ -1011,7 +1011,8 @@ Inbox
       </button>
 
       {/* QUESTIONS */}
-      {a.generated_questions?.map((q, qi) => (
+      {Array.isArray(a.generated_questions) &&
+  a.generated_questions.map((q, qi) => (
         <div key={qi} style={{ marginBottom: 16 }}>
           <p style={{ fontWeight: "bold" }}>{q.question}</p>
 
