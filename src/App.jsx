@@ -376,6 +376,7 @@ async function submitAssignment(
         assignment_id: assignmentId,
         student_id: user.id,
         content: content,
+quiz_answers: answers,
       },
     ]);
 
@@ -1308,6 +1309,19 @@ Inbox
           }}
         >
           {s.content}
+          {s.quiz_answers && (
+  <div style={{ marginTop: 12 }}>
+    <strong>Quiz antwoorden:</strong>
+
+    {Object.entries(s.quiz_answers).map(
+      ([key, value]) => (
+        <div key={key}>
+          {key}: {value}
+        </div>
+      )
+    )}
+  </div>
+)}
         </div>
 
         {role === "teacher" && (
