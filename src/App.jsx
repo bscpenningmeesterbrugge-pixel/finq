@@ -831,8 +831,7 @@ Inbox
 </div>   
    
     {/* ASSIGNMENTS */}
-    console.log(assignments);
-    
+      
 {assignments
   .filter((a) => {
     if (role === "teacher") return true;
