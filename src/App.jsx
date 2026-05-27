@@ -985,18 +985,12 @@ Inbox
             "0 2px 10px rgba(0,0,0,0.05)",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 14,
-          }}
-        >
-
-          {a.generated_questions?.map((q, i) => (
-  <div key={i} style={{ marginTop: 12 }}>
-    <p><strong>{q.question}</strong></p>
+    
+       {a.generated_questions?.map((q, i) => (
+  <div key={i} style={{ marginBottom: 12 }}>
+    <p style={{ fontWeight: "bold" }}>
+      {q.question}
+    </p>
 
     {q.options?.length > 0 && (
       <ul>
@@ -1006,9 +1000,8 @@ Inbox
       </ul>
     )}
   </div>
-))}
-          
-         <div>
+))}   
+        
   <h3
     style={{
       marginBottom: 10,
