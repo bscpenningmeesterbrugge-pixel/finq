@@ -39,9 +39,7 @@ const bigNumber = {
 };
 
 export default function App() {
-  console.log(import.meta.env.VITE_SUPABASE_URL)
-console.log(import.meta.env.VITE_SUPABASE_ANON_KEY)
-
+ 
   const [loading, setLoading] = useState(false);
 const [user, setUser] = useState(null);
 const [email, setEmail] = useState("");
@@ -830,10 +828,92 @@ Inbox
   
 </div>   
    
-    {/* ASSIGNMENTS */}
-
+   {/* ASSIGNMENTS */}
 {activePage === "assignments" && (
   <>
+
+{role === "teacher" && (
+  <div
+    style={{
+      background: "white",
+      padding: 24,
+      borderRadius: 20,
+      marginBottom: 24,
+      display: "flex",
+      flexDirection: "column",
+      gap: 12,
+    }}
+  >
+    <input
+      placeholder="Nieuwe opdracht"
+      value={newAssignment}
+      onChange={(e) =>
+        setNewAssignment(e.target.value)
+      }
+      style={inputStyle}
+    />
+
+    <textarea
+      placeholder="Beschrijving"
+      value={assignmentDescription}
+      onChange={(e) =>
+        setAssignmentDescription(
+          e.target.value
+        )
+      }
+      rows={4}
+      style={inputStyle}
+    />
+
+    <input
+      type="date"
+      value={assignmentDeadline}
+      onChange={(e) =>
+        setAssignmentDeadline(
+          e.target.value
+        )
+      }
+      style={inputStyle}
+    />
+
+    <select
+      value={selectedStudent}
+      onChange={(e) =>
+        setSelectedStudent(e.target.value)
+      }
+      style={inputStyle}
+    >
+      <option value="">
+        Kies student
+      </option>
+
+      {students.map((s) => (
+        <option
+          key={s.id}
+          value={s.id}
+        >
+          {s.email}
+        </option>
+      ))}
+    </select>
+
+    <button
+      onClick={addAssignment}
+      style={{
+        background: "#2563eb",
+        color: "white",
+        border: "none",
+        padding: 14,
+        borderRadius: 12,
+        cursor: "pointer",
+      }}
+    >
+      AI Assignment maken
+    </button>
+  </div>
+)}
+
+    
     {assignments
       .filter((a) => {
         if (role === "teacher") return true;
@@ -893,96 +973,57 @@ Inbox
                     {o}
                   </label>
                 ))}
-
               </div>
             ))}
 
-          <textarea
-            placeholder="Typ hier je antwoord..."
-            value={submissionTexts[a.id] || ""}
-            onChange={(e) =>
-              setSubmissionTexts({
-                ...submissionTexts,
-                [a.id]: e.target.value,
-              })
-            }
-            rows={5}
-            style={{
-              width: "100%",
-              marginTop: 20,
-              padding: 14,
-              borderRadius: 12,
-              border: "1px solid #ddd",
-            }}
-          />
+          {/* ENKEL STUDENTEN */}
+          {role === "student" && (
+            <>
+              <textarea
+                placeholder="Typ hier je antwoord..."
+                value={submissionTexts[a.id] || ""}
+                onChange={(e) =>
+                  setSubmissionTexts({
+                    ...submissionTexts,
+                    [a.id]: e.target.value,
+                  })
+                }
+                rows={5}
+                style={{
+                  width: "100%",
+                  marginTop: 20,
+                  padding: 14,
+                  borderRadius: 12,
+                  border: "1px solid #ddd",
+                }}
+              />
 
-          <button
-            onClick={() =>
-              submitAssignment(a.id)
-            }
-            style={{
-              marginTop: 16,
-              padding: "12px 18px",
-              borderRadius: 10,
-              border: "none",
-              background: "#2563eb",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            Assignment indienen
-          </button>
+              <button
+                onClick={() =>
+                  submitAssignment(a.id)
+                }
+                style={{
+                  marginTop: 16,
+                  padding: "12px 18px",
+                  borderRadius: 10,
+                  border: "none",
+                  background: "#2563eb",
+                  color: "white",
+                  cursor: "pointer",
+                }}
+              >
+                Assignment indienen
+              </button>
+            </>
+          )}
         </div>
       ))}
   </>
 )}
     
-       {/* SUBMISSIONS */}
-    {role === "teacher" && (
-      <div style={{ marginTop: 40 }}>
-        <h2>Ingediende assignments</h2>
 
-       {filteredSubmissions.map((s) => (
-          <div
-            key={s.id}
-            style={{
-              background: "#f8fafc",
-              padding: 20,
-              borderRadius: 18,
-              marginTop: 16,
-              border: "1px solid #e2e8f0",
-            }}
-          >
-           <p>
-  <strong>Student:</strong>{" "}
-  {s.profiles?.email}
-</p>
 
-           <div>
-  <strong>Antwoord:</strong>
-
-  <div
-    style={{
-      marginTop: 10,
-      background: "white",
-      padding: 14,
-      borderRadius: 12,
-      border: "1px solid #e2e8f0",
-      lineHeight: 1.6,
-    }}
-  >
-    {s.content}
-  </div>
-</div>
-
-            
-          </div>
-         })}
-      </div>
-    )}
-  </div>
-)}
-
+    
 {activePage === "inbox" && (
   <div
     style={{
