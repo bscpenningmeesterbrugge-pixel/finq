@@ -999,11 +999,11 @@ Inbox
   onClick={() =>
     submitQuiz(a.id, a.generated_questions?.length || 0)
   }
-
+>
   Quiz indienen
 </button>
         
-      >
+      
     
     {a.generated_questions?.map((q, qi) => (
   <div key={qi} style={{ marginBottom: 16 }}>
