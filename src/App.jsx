@@ -784,6 +784,9 @@ Inbox
 
   {/* CONTENT */}
   <div style={{ padding: 30 }}>
+
+    {activePage === "dashboard" && (
+  <>
    {/* STATS */}
 <div
   style={{
